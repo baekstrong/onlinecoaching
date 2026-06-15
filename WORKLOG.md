@@ -1,5 +1,21 @@
 # 작업 기록
 
+## 2026-06-15 (Phase 3a 최종 통합 검토)
+- npm test: 11 files, 29 tests 전체 통과
+- npx tsc --noEmit: .next 삭제 후 재실행 — 에러 없음
+- npm run build: 성공 — /coach/requests(ƒ), /coach/requests/[id](ƒ) 라우트 테이블 포함 확인
+- getRequestVideoUrl 잔존 참조: grep 결과 0 — 완전 제거 확인
+- requireCoachPage: guard.ts + queue 페이지 + detail 페이지 총 3곳, 코치 전용 두 페이지 모두 사용 확인
+- detail 페이지 와이어링: requireCoachPage → getRequestDetail → createPresignedDownloadUrl(직접 presign, 중복 조회 없음) + getAllAxesWithTags + getRequestClassifications 병렬, ClassificationEditor에 axes/initialTagIds 전달
+- ClassificationEditor: tagRequest/untagRequest 서버 액션 직결, pending/error optimistic 상태
+- assertCoach(): actions.ts 내 내부 헬퍼 — isCurrentUserCoach 경계 강제 (비코치 throw)
+- 보안 커버리지: requests-rls.test.ts(회원 코치 전용 태그 삽입 RLS 차단) + request-classifications.test.ts(addRequestClassification 회원 RLS throw) + guard.ts 코드 경로(미인증→/login, 비코치→/dashboard)로 커버. guard.ts 자체 단위 테스트는 없음(Next.js redirect mock 의존성 이슈).
+- E2E 데이터 레이어 검증(e2e-phase3a.ts 임시 스크립트 실행 후 삭제): 16 PASS / 0 FAIL
+  - 코치+회원 생성, 회원 스쿼트 태그 코칭 요청 생성, 코치 listAllRequests 포함 확인, 코치 getRequestDetail 상세+video_object_key 확인, 스쿼트 태그 자동 연결, 코치 문제유형 태그 추가+스쿼트 태그 공존, 멱등성(중복 추가 무시), 문제유형 태그 제거(스쿼트 유지), 회원 코치 전용 태그 RLS 차단
+- git status: working tree clean (e2e 스크립트 정리 완료), git log origin/main..HEAD: 없음(전부 푸시됨)
+- 변경된 파일: WORKLOG.md (이 기록)
+- Phase 3a 상태: ✅ READY — 모든 교차 항목 통과
+
 ## 2026-06-15 (Phase 3a Task 7 - 코치 요청 상세 페이지 + 분류 태깅 UI)
 - src/app/coach/requests/[id]/page.tsx 생성: 서버 컴포넌트 — 미인증 시 /login, 비코치 시 /dashboard 리다이렉트, params(Promise) await, getRequestDetail로 요청 상세 로드(없으면 notFound), Promise.all로 getAllAxesWithTags+getRequestClassifications+getRequestVideoUrl 병렬 호출, 영상 재생(video 태그) 및 회원 메모 표시, ClassificationEditor 전달
 - src/app/coach/requests/[id]/classification-editor.tsx 생성: 클라이언트 컴포넌트 — Set 기반 optimistic 태그 상태, toggle 함수(서버 액션 완료 후 로컬 상태 갱신), pending/error 상태 관리, 축별 태그 버튼(선택=검정, 미선택=흰색) UI
