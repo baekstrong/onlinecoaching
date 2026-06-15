@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { isCurrentUserCoach } from '@/lib/auth/coach'
 import { addRequestClassification, removeRequestClassification } from '@/lib/request-classifications'
 import { saveFeedbackDraft, publishFeedback, getFeedbackForRequest, addFeedbackAsset, removeFeedbackAsset } from '@/lib/feedback'
+import { createTemplate, updateTemplate, deleteTemplate } from '@/lib/templates'
 import { buildFeedbackImageKey, createPresignedUploadUrl } from '@/lib/storage/r2'
 
 async function assertCoach() {
@@ -67,4 +68,21 @@ export async function attachFeedbackImage(feedbackId: string, objectKey: string)
 export async function detachFeedbackImage(feedbackId: string, objectKey: string): Promise<void> {
   const supabase = await assertCoach()
   await removeFeedbackAsset(supabase, feedbackId, objectKey)
+}
+
+/** (코치) 템플릿 생성 */
+export async function createTemplateAction(input: { title: string; category: string | null; text: string }): Promise<void> {
+  const supabase = await assertCoach()
+  const { data: { user } } = await supabase.auth.getUser()
+  await createTemplate(supabase, user!.id, input)
+}
+/** (코치) 템플릿 수정 */
+export async function updateTemplateAction(id: string, input: { title: string; category: string | null; text: string }): Promise<void> {
+  const supabase = await assertCoach()
+  await updateTemplate(supabase, id, input)
+}
+/** (코치) 템플릿 삭제 */
+export async function deleteTemplateAction(id: string): Promise<void> {
+  const supabase = await assertCoach()
+  await deleteTemplate(supabase, id)
 }

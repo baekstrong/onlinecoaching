@@ -22,9 +22,14 @@ export default async function DashboardPage() {
 
       <div className="mt-6 flex gap-3">
         {profile?.role === 'coach' ? (
-          <Link href="/coach/requests" className="rounded-md bg-black px-4 py-2 text-white">
-            요청 큐 보기
-          </Link>
+          <>
+            <Link href="/coach/requests" className="rounded-md bg-black px-4 py-2 text-white">
+              요청 큐 보기
+            </Link>
+            <Link href="/coach/templates" className="rounded-md border px-4 py-2">
+              피드백 템플릿
+            </Link>
+          </>
         ) : (
           <>
             <Link href="/request/new" className="rounded-md bg-black px-4 py-2 text-white">
