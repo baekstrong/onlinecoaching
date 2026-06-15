@@ -1,5 +1,18 @@
 # 작업 기록
 
+## 2026-06-15 (Phase 4 Task 4 - 보관 만료 cron 라우트(CRON_SECRET 보호) + 운영 메모)
+- src/app/api/cron/expire-videos/route.ts 생성: POST 전용 — Authorization: Bearer $CRON_SECRET 헤더 검증, !secret || auth !== Bearer ${secret} 시 401, 통과 시 createAdmin(service_role) + expireOldRequestVideos(admin, deleteObject, new Date()) 호출, { expired: count } 반환
+- CRON_SECRET 미설정 시 무조건 401 (보호 해제 방지)
+- docs/superpowers/specs/2026-06-15-online-coaching-system-design.md: 맨 끝에 운영 메모(4단계) 섹션 추가 (외부 스케줄러 호출 방법, R2 라이프사이클 안전망, Resend 이메일 활성화 조건)
+- 검증:
+  - npx tsc --noEmit: 에러 없음
+  - npm run build: 성공 — /api/cron/expire-videos(Dynamic ƒ) 라우트 테이블 포함 확인
+  - npm test: 15 files, 37 tests 전체 통과
+  - curl POST /api/cron/expire-videos (Authorization 헤더 없음) → 401 (CRON_SECRET 미설정 + 헤더 없음, 양쪽 조건 모두 검증)
+- 변경된 파일: src/app/api/cron/expire-videos/route.ts (신규), docs/superpowers/specs/2026-06-15-online-coaching-system-design.md
+- 커밋: 693555d (NOT pushed)
+- Phase 4 전체 완료: Task1(회원 상세 열람) + Task2(이메일 알림) + Task3(90일 만료 도메인) + Task4(cron 라우트)
+
 ## 2026-06-15 (Phase 4 Task 3 - 90일 영상 보관 만료 도메인(R2 객체 삭제 + 키 제거))
 - TDD 순서: retention.test.ts 먼저 작성(./retention 없음 → FAIL 확인) → retention.ts 구현 → 1/1 PASS
 - src/lib/storage/r2.ts 수정: DeleteObjectCommand import 추가, deleteObject(objectKey) 헬퍼 추가 (R2 객체 삭제)
