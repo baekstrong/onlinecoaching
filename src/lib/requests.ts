@@ -59,3 +59,28 @@ export async function listMemberRequests(
   if (error) throw new Error(error.message)
   return (data ?? []) as CoachingRequest[]
 }
+
+/** (코치) 모든 요청을 최신순으로. 상태 필터 옵션. RLS가 코치에게만 전체를 노출. */
+export async function listAllRequests(
+  supabase: SupabaseClient,
+  status?: string,
+): Promise<CoachingRequest[]> {
+  let query = supabase.from('coaching_requests').select('*').order('created_at', { ascending: false })
+  if (status) query = query.eq('status', status)
+  const { data, error } = await query
+  if (error) throw new Error(error.message)
+  return (data ?? []) as CoachingRequest[]
+}
+
+/** (코치/본인) 단일 요청 상세. 없거나 접근권 없으면 null. */
+export async function getRequestDetail(
+  supabase: SupabaseClient,
+  requestId: string,
+): Promise<CoachingRequest | null> {
+  const { data } = await supabase
+    .from('coaching_requests')
+    .select('*')
+    .eq('id', requestId)
+    .maybeSingle()
+  return (data as CoachingRequest | null) ?? null
+}
