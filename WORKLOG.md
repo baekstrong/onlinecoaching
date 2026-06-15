@@ -1,5 +1,16 @@
 # 작업 기록
 
+## 2026-06-15 (Phase 2 Task 6 - 코칭 신청 폼 UI)
+- src/app/request/new/page.tsx 생성: 서버 컴포넌트 - 미인증 시 /login 리다이렉트, getMemberFacingAxisWithTags로 운동 종목 축+태그 로드 후 RequestForm에 전달
+- src/app/request/new/request-form.tsx 생성: 클라이언트 컴포넌트 - 종목 선택(select), 메모(textarea), 영상 첨부(input[type=file]) + requestUploadUrl/submitCoachingRequest 호출 → /requests 이동
+- 클라이언트 검증: 종목 미선택·파일 미첨부·video/* 타입·200MB 초과 모두 차단
+- npx tsc --noEmit: 에러 없음
+- npm run build: 성공, /request/new 라우트 Dynamic(ƒ) 포함 확인
+- npm test: 8 files, 20 tests 모두 통과 (기존 테스트 깨지지 않음)
+- 변경된 파일: src/app/request/new/page.tsx, src/app/request/new/request-form.tsx
+- 커밋: b21fc6b (NOT pushed)
+- 다음 작업: Phase 2 Task 7 이후 진행
+
 ## 2026-06-15 (Phase 2 Task 5 - 영상 업로드 URL 발급/요청 제출 Server Action)
 - src/app/request/actions.ts 생성: 'use server' 파일, 두 Server Action 구현
   - requestUploadUrl(filename, contentType): 로그인 회원의 본인 prefix presigned PUT URL + objectKey 반환
