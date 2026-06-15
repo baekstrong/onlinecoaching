@@ -1,5 +1,16 @@
 # 작업 기록
 
+## 2026-06-15 (Phase 2 Task 7 - 내 신청 목록 페이지 + 대시보드 링크)
+- src/app/requests/page.tsx 생성: 서버 컴포넌트 - 미인증 시 /login 리다이렉트, listMemberRequests로 본인 요청 목록 로드, STATUS_LABEL로 상태 한국어 표시, 빈 목록 안내문 + 새 신청 링크
+- src/app/dashboard/page.tsx 교체: 기존 인증 체크·프로필 조회·역할별 제목 유지 + '코칭 신청하기'(/request/new)·'내 신청 보기'(/requests) 링크 블록 추가
+- npx tsc --noEmit: 에러 없음
+- npm run build: 성공, 라우트 테이블에 /requests(Dynamic ƒ) 포함 확인
+- npm test: 8 files, 20 tests 모두 통과
+- curl 스모크 테스트: GET /requests → 307 http://localhost:3000/login (미인증 리다이렉트 정상)
+- 변경된 파일: src/app/requests/page.tsx, src/app/dashboard/page.tsx
+- 커밋: 19c328a (NOT pushed)
+- 다음 작업: Phase 3 - 코치 워크플로우
+
 ## 2026-06-15 (Phase 2 Task 6 - 코칭 신청 폼 UI)
 - src/app/request/new/page.tsx 생성: 서버 컴포넌트 - 미인증 시 /login 리다이렉트, getMemberFacingAxisWithTags로 운동 종목 축+태그 로드 후 RequestForm에 전달
 - src/app/request/new/request-form.tsx 생성: 클라이언트 컴포넌트 - 종목 선택(select), 메모(textarea), 영상 첨부(input[type=file]) + requestUploadUrl/submitCoachingRequest 호출 → /requests 이동
