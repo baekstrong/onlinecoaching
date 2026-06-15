@@ -1,5 +1,17 @@
 # 작업 기록
 
+## 2026-06-15 (Phase 3b Task 1 - 피드백 유일성·자산 object_key 마이그레이션 + 이미지 키 빌더)
+- TDD: 테스트 먼저 추가(buildFeedbackImageKey not exported → 2 FAIL), 구현 후 7/7 PASS 확인
+- supabase/migrations/0004_feedback.sql: feedbacks_request_unique 유일 제약(요청당 피드백 1개 upsert 대상), feedback_assets.image_url → object_key 컬럼 rename
+- npx supabase db reset: 0001–0004 마이그레이션 + seed 에러 없이 완료. feedback_assets 컬럼 확인(object_key 존재, image_url 없음).
+- src/lib/storage/r2.ts: buildFeedbackImageKey(requestId, filename) 추가 — feedback/<requestId>/<uuid>.<ext> 형태 키 생성
+- src/lib/storage/r2.test.ts: buildFeedbackImageKey 2개 테스트 추가 (prefix·확장자 보존·호출별 고유성)
+- npm test -- r2: 7/7 통과 / npm test: 11 files, 31 tests 전체 통과
+- npx tsc --noEmit: 에러 없음
+- 변경된 파일: supabase/migrations/0004_feedback.sql, src/lib/storage/r2.ts, src/lib/storage/r2.test.ts
+- 커밋: 384d879 (NOT pushed)
+- 다음 작업: Phase 3b Task 2 - 피드백 템플릿 CRUD
+
 ## 2026-06-15 (3b단계 계획 수립)
 - 3b(템플릿 + 리치 피드백) 구현 계획서 작성 (TDD 6개 Task)
 - 결정: 피드백 = 텍스트 본문(body_rich jsonb) + R2 이미지 첨부(영상 인프라 재사용) + 본문 내 링크. 요청당 피드백 1개(UNIQUE).
