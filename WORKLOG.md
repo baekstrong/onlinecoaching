@@ -1,5 +1,17 @@
 # 작업 기록
 
+## 2026-06-15 (Phase 2 Task 4 - 코칭 요청 생성/목록 도메인 로직)
+- TDD: 테스트 먼저 작성(모듈 없음 → FAIL), 구현 후 PASS 확인
+- src/lib/requests.test.ts: 3개 테스트 (요청 생성+분류 연결 / 타인 prefix 영상키 거부 / 본인 목록 최신순)
+- src/lib/requests.ts: isOwnedObjectKey, createCoachingRequest, listMemberRequests 구현
+  - 영상키 소유 prefix 검증 (requests/<memberId>/) — 불일치 시 즉시 예외
+  - 요청 삽입 후 분류 태그 연결; 태그 연결 실패 시 요청 롤백(고아 방지)
+  - listMemberRequests: RLS 기반 member_id 필터 + 최신순
+- npm test -- requests.test: 3/3 통과 / npm test: 8 files, 19 tests 전체 통과
+- 변경된 파일: src/lib/requests.ts, src/lib/requests.test.ts
+- 커밋: b175b8d (NOT pushed)
+- 다음 작업: Phase 2 Task 5 - 회원 신청 폼 UI / Server Action
+
 ## 2026-06-15 (Phase 2 Task 3 - 회원 노출 분류 축+태그 조회 헬퍼)
 - TDD: 테스트 먼저 작성(모듈 없음 → FAIL), 구현 후 PASS 확인
 - src/lib/classification.test.ts: getMemberFacingAxisWithTags가 '운동 종목' 축과 정렬된 태그 6개를 반환하는지 검증
