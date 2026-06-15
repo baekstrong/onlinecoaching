@@ -34,17 +34,20 @@ export async function getFeedbackForRequest(
   supabase: SupabaseClient,
   requestId: string,
 ): Promise<Feedback | null> {
-  const { data } = await supabase.from('feedbacks').select(SELECT).eq('request_id', requestId).maybeSingle()
+  const { data, error } = await supabase.from('feedbacks').select(SELECT).eq('request_id', requestId).maybeSingle()
+  if (error) throw new Error(error.message)
   return data ? toFeedback(data) : null
 }
 
-/** (코치) 피드백 발행(published_at = now). */
+/** (코치) 피드백 발행(published_at = now). 대상이 없으면 오류. */
 export async function publishFeedback(supabase: SupabaseClient, feedbackId: string): Promise<void> {
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from('feedbacks')
     .update({ published_at: new Date().toISOString() })
     .eq('id', feedbackId)
-  if (error) throw new Error(error.message)
+    .select('id')
+    .single()
+  if (error || !data) throw new Error(error?.message ?? '발행할 피드백을 찾을 수 없습니다.')
 }
 
 /** (코치) 피드백 이미지 자산 추가. */
