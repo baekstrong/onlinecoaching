@@ -1,5 +1,14 @@
 # 작업 기록
 
+## 2026-06-15 (Phase 2 Task 3 - 회원 노출 분류 축+태그 조회 헬퍼)
+- TDD: 테스트 먼저 작성(모듈 없음 → FAIL), 구현 후 PASS 확인
+- src/lib/classification.test.ts: getMemberFacingAxisWithTags가 '운동 종목' 축과 정렬된 태그 6개를 반환하는지 검증
+- src/lib/classification.ts: MemberFacingAxis 타입, getMemberFacingAxisWithTags(supabase) 구현 (is_member_facing=true 축 조회 → 태그 sort_order 정렬)
+- npm test -- classification: 1/1 통과 / npm test: 7 files, 16 tests 전체 통과
+- 변경된 파일: src/lib/classification.ts, src/lib/classification.test.ts
+- 커밋: b8dd1df (NOT pushed)
+- 다음 작업: Phase 2 Task 4 - 회원 신청 폼 UI
+
 ## 2026-06-15 (Phase 2 Task 2 - 회원 종목 분류 RLS 정책 추가)
 - migration 0002: 회원이 자기 요청에 회원 노출 축(운동 종목) 태그만 삽입할 수 있는 RLS 정책 추가
 - src/test-helpers/users.ts: 재사용 가능한 테스트 헬퍼 (adminClient, createSignedInMember, deleteUser)
