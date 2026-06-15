@@ -3,8 +3,11 @@ import { requireCoachPage } from '../../guard'
 import { getRequestDetail } from '@/lib/requests'
 import { getAllAxesWithTags } from '@/lib/classification'
 import { getRequestClassifications } from '@/lib/request-classifications'
+import { getFeedbackForRequest, listFeedbackAssets } from '@/lib/feedback'
+import { listTemplates } from '@/lib/templates'
 import { createPresignedDownloadUrl } from '@/lib/storage/r2'
 import { ClassificationEditor } from './classification-editor'
+import { FeedbackEditor } from './feedback-editor'
 
 export default async function CoachRequestDetailPage({
   params,
@@ -17,13 +20,19 @@ export default async function CoachRequestDetailPage({
   const request = await getRequestDetail(supabase, id)
   if (!request) notFound()
 
-  // 가드를 이미 통과했고 요청 행도 확보했으므로, 보유한 영상 키로 직접 presign(중복 조회 방지)
-  const [axes, current, videoUrl] = await Promise.all([
+  const [axes, current, videoUrl, feedback, templates] = await Promise.all([
     getAllAxesWithTags(supabase),
     getRequestClassifications(supabase, id),
     request.video_object_key ? createPresignedDownloadUrl(request.video_object_key) : Promise.resolve(null),
+    getFeedbackForRequest(supabase, id),
+    listTemplates(supabase),
   ])
   const selectedTagIds = current.map((c) => c.tag_id)
+
+  const assets = feedback ? await listFeedbackAssets(supabase, feedback.id) : []
+  const assetViews = await Promise.all(
+    assets.map(async (a) => ({ objectKey: a.object_key, url: await createPresignedDownloadUrl(a.object_key) })),
+  )
 
   return (
     <main className="mx-auto flex max-w-2xl flex-col gap-6 p-6">
@@ -41,6 +50,14 @@ export default async function CoachRequestDetailPage({
       </section>
 
       <ClassificationEditor requestId={id} axes={axes} initialTagIds={selectedTagIds} />
+
+      <FeedbackEditor
+        requestId={id}
+        templates={templates.map((t) => ({ id: t.id, title: t.title, text: t.text }))}
+        initialText={feedback?.text ?? ''}
+        publishedAt={feedback?.published_at ?? null}
+        initialAssets={assetViews}
+      />
     </main>
   )
 }
