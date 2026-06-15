@@ -1,5 +1,15 @@
 # 작업 기록
 
+## 2026-06-15 (Phase 3a Task 3 - 코치용 요청 목록(상태필터)/상세 도메인 로직)
+- TDD: 테스트 먼저 작성(함수 미존재 → FAIL 3/3), 구현 후 PASS 3/3 확인
+- src/lib/requests-coach.test.ts: listAllRequests(코치는 여러 회원 요청 모두 조회 / 상태 필터) + getRequestDetail(코치가 임의 요청 상세 조회) 3개 테스트
+- src/lib/requests.ts: listAllRequests(supabase, status?) 추가 — RLS가 코치에게 전체 노출, 상태 필터 옵션, 최신순; getRequestDetail(supabase, requestId) 추가 — .maybeSingle(), 없거나 권한 없으면 null
+- npm test -- requests-coach: 3/3 통과 / npm test: 10 files, 26 tests 전체 통과
+- npx tsc --noEmit: 에러 없음
+- 변경된 파일: src/lib/requests.ts, src/lib/requests-coach.test.ts
+- 커밋: d861029 (NOT pushed)
+- 다음 작업: Phase 3a Task 4 이후 진행
+
 ## 2026-06-15 (Phase 3a Task 2 - 코치 역할 판정 헬퍼 + 테스트용 코치 생성 헬퍼)
 - TDD: 테스트 먼저 작성(./coach 없음 → FAIL), 구현 후 PASS 확인
 - src/test-helpers/users.ts: createSignedInCoach(email) 헬퍼 추가 (role='coach'로 profiles upsert 후 로그인 클라이언트 반환)
