@@ -1,5 +1,16 @@
 # 작업 기록
 
+## 2026-06-15 (Task 1)
+- Next.js 스캐폴드 및 Vitest 테스트 인프라 구성 완료
+- create-next-app@latest (next 16.2.9, React 19, TypeScript, Tailwind v4, App Router, src-dir) 설치
+- 테스트 의존성 설치: vitest, @vitejs/plugin-react, jsdom, @testing-library/react, @testing-library/jest-dom, @testing-library/user-event
+- vitest.config.ts, vitest.setup.ts 작성
+- package.json에 "test", "test:watch" 스크립트 추가
+- TDD 사이클: src/lib/sanity.test.ts 작성(실패 확인) → src/lib/sanity.ts 구현 → npm test 1 passed 확인
+- npx tsc --noEmit 타입 에러 없음
+- 변경된 파일: package.json, vitest.config.ts, vitest.setup.ts, src/lib/sanity.ts, src/lib/sanity.test.ts, .gitignore, eslint.config.mjs, next.config.ts, next-env.d.ts, postcss.config.mjs, tsconfig.json, src/app/layout.tsx, src/app/page.tsx, src/app/globals.css
+- 다음 작업: Task 2 - Supabase 로컬 환경 및 DB 스키마 구성
+
 ## 2026-06-15
 - 온라인 코칭 시스템 초기 아이디어 회의 및 설계 확정
 - 핵심 결정: 비동기 영상 피드백 / 1인 코치 / 회당 결제(연동은 추후) / 템플릿 텍스트 피드백 / R2 직접 업로드(90일 자동삭제) / 모바일 웹 / 카카오 로그인 / Next.js+Supabase+R2
