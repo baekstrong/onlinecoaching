@@ -6,6 +6,8 @@ import { addRequestClassification, removeRequestClassification } from '@/lib/req
 import { saveFeedbackDraft, publishFeedback, getFeedbackForRequest, addFeedbackAsset, removeFeedbackAsset } from '@/lib/feedback'
 import { createTemplate, updateTemplate, deleteTemplate } from '@/lib/templates'
 import { buildFeedbackImageKey, createPresignedUploadUrl } from '@/lib/storage/r2'
+import { getRequestDetail } from '@/lib/requests'
+import { sendFeedbackPublishedEmail } from '@/lib/email'
 
 async function assertCoach() {
   const supabase = await createClient()
@@ -32,12 +34,23 @@ export async function saveFeedback(requestId: string, text: string): Promise<{ i
   return { id: fb.id }
 }
 
-/** (코치) 피드백 발행 */
+/** (코치) 피드백 발행 + 회원에게 이메일 알림 */
 export async function publishFeedbackAction(requestId: string): Promise<void> {
   const supabase = await assertCoach()
   const fb = await getFeedbackForRequest(supabase, requestId)
   if (!fb) throw new Error('저장된 피드백이 없습니다.')
   await publishFeedback(supabase, fb.id)
+
+  // 회원 이메일 조회 후 알림(실패해도 발행은 성공 처리)
+  try {
+    const req = await getRequestDetail(supabase, requestId)
+    if (req) {
+      const { data: profile } = await supabase.from('profiles').select('email').eq('id', req.member_id).maybeSingle()
+      if (profile?.email) await sendFeedbackPublishedEmail(profile.email, requestId)
+    }
+  } catch (e) {
+    console.error('피드백 알림 이메일 실패:', e)
+  }
 }
 
 /** (코치) 피드백 이미지 업로드 URL 발급 */

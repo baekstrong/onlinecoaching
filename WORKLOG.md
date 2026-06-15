@@ -1,5 +1,25 @@
 # 작업 기록
 
+## 2026-06-15 (Phase 4 Task 2 - 피드백 발행 이메일 알림(Resend))
+- TDD 순서: email.test.ts 먼저 작성(./email 없음 → FAIL 확인) → email.ts 구현 → 1/1 PASS
+- resend@6.12.4 설치 (npm install resend)
+- .env.example에 RESEND_API_KEY, EMAIL_FROM, CRON_SECRET 항목 추가
+- src/lib/email.test.ts: RESEND_API_KEY 없으면 no-op false 반환 검증 (1개 테스트)
+- src/lib/email.ts: sendFeedbackPublishedEmail(to, requestId) — apiKey 없으면 console.warn + false 반환, 있으면 동적 import Resend + 이메일 발송 + true 반환
+- src/app/coach/actions.ts 수정:
+  - getRequestDetail import 추가 (기존 없음 — 중복 없음 확인)
+  - sendFeedbackPublishedEmail import 추가
+  - publishFeedbackAction: 발행 후 try/catch로 회원 이메일 조회(profiles.email) + 알림 발송. 이메일 실패해도 발행은 성공 처리.
+- 검증:
+  - npm test -- "email.test": 1/1 PASS
+  - npx tsc --noEmit: 에러 없음 (stale .next/types/ 중복 파일 3개 삭제 후)
+  - npm run build: 성공 (전체 라우트 포함)
+  - npm test: 14 files, 36 tests 전체 통과
+- 변경된 파일: src/lib/email.ts (신규), src/lib/email.test.ts (신규), src/app/coach/actions.ts, .env.example, package.json, package-lock.json
+- Self-review: getRequestDetail는 actions.ts에 없었음 — 신규 import 추가. 이메일 no-op(키 없음) + 발행 try/catch 분리 모두 유지.
+- 커밋: (NOT pushed)
+- 다음 작업: Phase 4 Task 3 - 90일 영상 만료 도메인(R2 삭제+키 null)
+
 ## 2026-06-15 (Phase 4 Task 1 코드 리뷰 - 스펙 준수 + 보안 검증)
 - Stage 1 스펙 준수 전체 확인:
   - src/app/requests/[id]/page.tsx: member authed createClient(ANON_KEY), auth gate(→/login), getRequestDetail→notFound, getFeedbackForRequest→published_at!=null 게이트, presign 영상+피드백 이미지(published만), 미발행시 "아직 피드백이 발행되지 않았습니다" 표시 — 모두 구현 확인
