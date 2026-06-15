@@ -1,5 +1,16 @@
 # 작업 기록
 
+## 2026-06-15 (Phase 3a Task 6 - 코치 요청 큐 페이지 + 대시보드 코치 링크)
+- src/app/coach/requests/page.tsx 생성: 서버 컴포넌트 — 미인증 시 /login 리다이렉트, 비코치 시 /dashboard 리다이렉트, searchParams(Promise) await, listAllRequests로 상태 필터 목록 로드, STATUS_LABEL 한국어 매핑, 상태 필터 nav(전체/검토중/완료)
+- src/app/dashboard/page.tsx 수정: 링크 블록을 role-aware로 교체 — coach면 '요청 큐 보기'(/coach/requests), 아니면 기존 '코칭 신청하기'+'내 신청 보기' 유지
+- npx tsc --noEmit: 에러 없음
+- npm run build: 성공 — /coach/requests(Dynamic ƒ) 라우트 테이블 포함 확인
+- npm test: 11 files, 29 tests 모두 통과
+- 스모크 테스트: curl /coach/requests → 307 http://localhost:3000/login (미인증 리다이렉트 정상)
+- 변경된 파일: src/app/coach/requests/page.tsx, src/app/dashboard/page.tsx
+- 커밋: 5b892f4 (NOT pushed)
+- 다음 작업: Phase 3a Task 7 - 코치 요청 상세 + 분류 태깅 UI
+
 ## 2026-06-15 (Phase 3a Task 5 - 코치 Server Action: 분류 태깅 + 영상 URL)
 - src/app/coach/actions.ts 생성: 'use server' — 3개 Server Action 구현
   - assertCoach(): 내부 헬퍼 — createClient() + isCurrentUserCoach() 로 코치 권한 경계 강제
