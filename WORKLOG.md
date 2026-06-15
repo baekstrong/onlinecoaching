@@ -1,5 +1,13 @@
 # 작업 기록
 
+## 2026-06-15 (3b단계 템플릿+리치 피드백 완료, 3단계 전체 완료)
+- Phase 3b 6개 Task + 리뷰 반영 수정 완료·푸시. 서브에이전트 구동 + 2단계 검토 + 자동 보안 리뷰 반영.
+- 결과물: 마이그레이션0004(피드백 유일성·자산 object_key), 이미지 키 빌더, 템플릿 CRUD, 피드백 draft/발행/자산 도메인, 코치 피드백/이미지/템플릿 Server Action, 템플릿 관리 페이지, 요청 상세 피드백 에디터(템플릿 불러오기·이미지 첨부·임시저장·발행).
+- 보안: 피드백/템플릿/자산 모두 코치 전용(assertCoach + RLS). 이미지 MIME 화이트리스트(SVG 차단). 회원 작성 차단·발행된 피드백만 회원 열람(RLS) E2E 검증.
+- 검증: npm test 35/35, tsc 클린, build 성공, 데이터계층 E2E 10검사 통과, 통합 검토 READY.
+- **3단계(코치 워크플로우) 전체 완료** = 3a(요청 큐·분류 태깅) + 3b(템플릿·리치 피드백).
+- 남은 라이브 검증(키 필요): 카카오 로그인, R2 영상 업로드·이미지 업로드. 남은 단계: 4단계(회원 열람·이메일 알림·90일 보관).
+
 ## 2026-06-15 (Phase 3b Task 6 - 요청 상세 피드백 에디터)
 - src/app/coach/requests/[id]/page.tsx 교체: getFeedbackForRequest+listFeedbackAssets+listTemplates 병렬 로드, FeedbackEditor에 templates/initialText/publishedAt/initialAssets 전달
 - src/app/coach/requests/[id]/feedback-editor.tsx 생성: 클라이언트 컴포넌트 — 템플릿 불러오기(select), 텍스트 에디터(textarea), 이미지 첨부(file input → presigned PUT → attachFeedbackImage), 이미지 제거(detachFeedbackImage), 임시 저장(saveFeedback), 발행(saveFeedback+publishFeedbackAction), 발행 상태 표시(발행됨/작성중), error/notice 상태 메시지
