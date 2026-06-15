@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto'
-import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3'
+import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 
 function r2Client(): S3Client {
@@ -51,4 +51,9 @@ export function buildFeedbackImageKey(requestId: string, filename: string): stri
   const match = filename.match(/\.([a-zA-Z0-9]+)$/)
   const ext = match ? match[1].toLowerCase() : 'png'
   return `feedback/${requestId}/${randomUUID()}.${ext}`
+}
+
+/** R2 객체 삭제. */
+export async function deleteObject(objectKey: string): Promise<void> {
+  await r2Client().send(new DeleteObjectCommand({ Bucket: process.env.R2_BUCKET!, Key: objectKey }))
 }
