@@ -1,5 +1,20 @@
 # 작업 기록
 
+## 2026-06-15 (Task 3 - Security Fix)
+- RLS 정책 보안 강화: role 자가변경 차단, 첨부 파일 게이트, 요청 필드 고정, 템플릿 소유 한정, 최소권한 GRANT
+- is_coach() 함수에 security definer 추가 (RLS 재귀 스택 오버플로우 방지)
+- 본인 프로필 수정 정책에 with check 추가 (role 필드 자가변경 차단)
+- 요청 생성 정책에 status='in_review' and price is null 조건 고정
+- 피드백 첨부 조회 정책에 발행 여부 + 소유권 게이트 추가
+- 템플릿 정책을 코치 전용에서 코치 본인 소유만으로 강화 (coach_id = auth.uid())
+- GRANT를 최소권한 원칙으로 교체 (anon: select만, authenticated: CRUD, service_role: all)
+- npx supabase db reset 성공 (경고: seed.sql 없음 - 정상)
+- npm test: 3 files, 6 tests 모두 통과
+- rls_verify.mjs 6개 검사 전체 PASS (anon 차단, role 자가변경 차단, 멤버 격리, 필드 주입 차단)
+- 변경된 파일: supabase/migrations/0001_init.sql
+- 커밋: 961bee2
+- 다음 작업: Task 4 - 분류 시드
+
 ## 2026-06-15 (Task 3)
 - 전체 DB 스키마 및 RLS 정책 마이그레이션 추가
 - supabase/migrations/0001_init.sql 작성: enum 2개, 테이블 9개, is_coach() 헬퍼 함수, RLS 정책 전체
