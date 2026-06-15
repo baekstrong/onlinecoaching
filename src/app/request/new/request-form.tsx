@@ -32,7 +32,7 @@ export function RequestForm({ axisName, tags }: { axisName: string; tags: Tag[] 
         headers: { 'Content-Type': file.type },
       })
       if (!put.ok) throw new Error('영상 업로드에 실패했습니다.')
-      await submitCoachingRequest({ tagId, note, objectKey })
+      await submitCoachingRequest({ tagId, note: note.trim(), objectKey })
       router.push('/requests')
     } catch (err) {
       setError(err instanceof Error ? err.message : '신청에 실패했습니다.')
@@ -76,7 +76,7 @@ export function RequestForm({ axisName, tags }: { axisName: string; tags: Tag[] 
         />
       </label>
 
-      {error && <p className="text-sm text-red-500">{error}</p>}
+      {error && <p role="alert" className="text-sm text-red-500">{error}</p>}
 
       <button
         type="submit"
