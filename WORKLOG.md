@@ -1,5 +1,18 @@
 # 작업 기록
 
+## 2026-06-15 (Task 3)
+- 전체 DB 스키마 및 RLS 정책 마이그레이션 추가
+- supabase/migrations/0001_init.sql 작성: enum 2개, 테이블 9개, is_coach() 헬퍼 함수, RLS 정책 전체
+- vitest.config.ts: dotenv로 .env.local 자동 로드 추가
+- src/lib/db/schema.test.ts: 9개 핵심 테이블 select 가능 여부 테스트
+- dotenv 패키지 dev 의존성 설치
+- npx supabase db reset 성공 (에러 없음)
+- npm test -- schema: 1 passed / npm test: 3 files, 6 tests 모두 통과
+- 특이사항: Supabase 신버전에서 auto_expose_new_tables 기본값이 비활성화되어 service_role에 GRANT 구문을 마이그레이션에 추가함
+- 변경된 파일: supabase/migrations/0001_init.sql, src/lib/db/schema.test.ts, vitest.config.ts, package.json, package-lock.json
+- 커밋: f70382b
+- 다음 작업: Task 4 - 분류 시드
+
 ## 2026-06-15 (Task 5)
 - Supabase 브라우저/서버/미들웨어 클라이언트 팩토리 구현
 - @supabase/ssr, @supabase/supabase-js 패키지 설치
