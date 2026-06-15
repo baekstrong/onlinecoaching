@@ -21,12 +21,20 @@ export default async function DashboardPage() {
       <p className="mt-2 text-gray-500">{profile?.name ?? user.email} 님 환영합니다.</p>
 
       <div className="mt-6 flex gap-3">
-        <Link href="/request/new" className="rounded-md bg-black px-4 py-2 text-white">
-          코칭 신청하기
-        </Link>
-        <Link href="/requests" className="rounded-md border px-4 py-2">
-          내 신청 보기
-        </Link>
+        {profile?.role === 'coach' ? (
+          <Link href="/coach/requests" className="rounded-md bg-black px-4 py-2 text-white">
+            요청 큐 보기
+          </Link>
+        ) : (
+          <>
+            <Link href="/request/new" className="rounded-md bg-black px-4 py-2 text-white">
+              코칭 신청하기
+            </Link>
+            <Link href="/requests" className="rounded-md border px-4 py-2">
+              내 신청 보기
+            </Link>
+          </>
+        )}
       </div>
     </main>
   )
