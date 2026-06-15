@@ -1,5 +1,17 @@
 # 작업 기록
 
+## 2026-06-15 (Phase 2 Task 4 Bugfix - 코칭 요청 원자적 RPC 전환, 고아 요청 방지)
+- 버그: createCoachingRequest의 수동 롤백 DELETE가 RLS에 막혀 고아 요청 행이 남는 문제 수정
+- supabase/migrations/0003_atomic_request.sql: create_coaching_request(p_tag_id, p_note, p_object_key) PL/pgSQL 함수 추가 (security invoker, 두 INSERT 원자적 트랜잭션, authenticated에만 EXECUTE 권한)
+- npx supabase db reset: 0001+0002+0003 마이그레이션 + 시드 에러 없이 완료
+- src/lib/requests.ts: createCoachingRequest를 supabase.rpc('create_coaching_request', ...) 호출로 전환 / CoachingRequest 타입에 video_uploaded_at 필드 추가
+- src/lib/requests.test.ts: 기존 3개 테스트 유지 + 원자성 테스트 추가(코치 전용 축 태그 사용 시 분류 INSERT가 RLS에 막혀 전체 롤백 → 고아 요청 count=0 검증)
+- npm test -- "requests.test": 4/4 통과 (원자성 테스트 포함) / npm test: 8 files, 20 tests 전체 통과
+- npx tsc --noEmit: 에러 없음
+- 변경된 파일: supabase/migrations/0003_atomic_request.sql, src/lib/requests.ts, src/lib/requests.test.ts
+- 커밋: c6753a1 (NOT pushed)
+- 다음 작업: Phase 2 Task 5 - 회원 신청 폼 UI / Server Action
+
 ## 2026-06-15 (Phase 2 Task 4 - 코칭 요청 생성/목록 도메인 로직)
 - TDD: 테스트 먼저 작성(모듈 없음 → FAIL), 구현 후 PASS 확인
 - src/lib/requests.test.ts: 3개 테스트 (요청 생성+분류 연결 / 타인 prefix 영상키 거부 / 본인 목록 최신순)
