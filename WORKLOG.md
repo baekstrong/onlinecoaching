@@ -1,5 +1,16 @@
 # 작업 기록
 
+## 2026-06-15 (Phase 3a Task 2 - 코치 역할 판정 헬퍼 + 테스트용 코치 생성 헬퍼)
+- TDD: 테스트 먼저 작성(./coach 없음 → FAIL), 구현 후 PASS 확인
+- src/test-helpers/users.ts: createSignedInCoach(email) 헬퍼 추가 (role='coach'로 profiles upsert 후 로그인 클라이언트 반환)
+- src/lib/auth/coach.test.ts: getCurrentRole/isCurrentUserCoach 2개 테스트 (코치 계정 coach 판정 / 회원 계정 비코치 판정)
+- src/lib/auth/coach.ts: getCurrentRole(supabase) → profiles.role 조회, isCurrentUserCoach(supabase) → role === 'coach' 여부 반환
+- npm test -- "coach.test": 2/2 통과 / npm test: 9 files, 23 tests 전체 통과
+- npx tsc --noEmit: 에러 없음
+- 변경된 파일: src/test-helpers/users.ts, src/lib/auth/coach.test.ts, src/lib/auth/coach.ts
+- 커밋: 7a89f35 (NOT pushed)
+- 다음 작업: Phase 3a Task 3 이후 진행
+
 ## 2026-06-15 (3a단계 계획 수립)
 - 3단계(코치 워크플로우)가 커서 3a(요청 큐+상세+분류 태깅) / 3b(템플릿+리치 피드백)로 분할
 - 3a 구현 계획서 작성 (TDD 7개 Task): R2 GET URL, 코치 판정 헬퍼, 요청 목록/상세, 전체 축 조회+요청 분류 CRUD, 코치 Server Action, 요청 큐 페이지, 상세+분류 태깅 UI
