@@ -47,6 +47,7 @@ export function FeedbackEditor({
 
   async function publish() {
     setError(null); setNotice(null)
+    if (!text.trim()) return setError('내용을 입력해주세요.')
     setBusy(true)
     try {
       await saveFeedback(requestId, text.trim())
@@ -66,7 +67,7 @@ export function FeedbackEditor({
     if (!file.type.startsWith('image/')) return setError('이미지 파일만 첨부할 수 있습니다.')
     setError(null); setBusy(true)
     try {
-      const { id: feedbackId } = await saveFeedback(requestId, text.trim() || '(작성 중)')
+      const { id: feedbackId } = await saveFeedback(requestId, text.trim())
       const { uploadUrl, objectKey } = await requestFeedbackImageUpload(requestId, file.name, file.type)
       const put = await fetch(uploadUrl, { method: 'PUT', body: file, headers: { 'Content-Type': file.type } })
       if (!put.ok) throw new Error('이미지 업로드 실패')
@@ -80,7 +81,7 @@ export function FeedbackEditor({
   async function removeImage(objectKey: string) {
     setBusy(true)
     try {
-      const { id: feedbackId } = await saveFeedback(requestId, text.trim() || '(작성 중)')
+      const { id: feedbackId } = await saveFeedback(requestId, text.trim())
       await detachFeedbackImage(feedbackId, objectKey)
       setAssets((prev) => prev.filter((a) => a.objectKey !== objectKey))
       router.refresh()
