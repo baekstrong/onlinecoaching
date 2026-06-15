@@ -40,13 +40,18 @@ export async function publishFeedbackAction(requestId: string): Promise<void> {
 }
 
 /** (코치) 피드백 이미지 업로드 URL 발급 */
+const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
+
 export async function requestFeedbackImageUpload(
   requestId: string,
   filename: string,
   contentType: string,
 ): Promise<{ uploadUrl: string; objectKey: string }> {
   await assertCoach()
-  if (!contentType.startsWith('image/')) throw new Error('이미지 파일만 업로드할 수 있습니다.')
+  // 안전한 래스터 이미지만 허용(image/svg+xml 등 스크립트 가능 형식 차단)
+  if (!ALLOWED_IMAGE_TYPES.includes(contentType)) {
+    throw new Error('JPG·PNG·GIF·WEBP 이미지만 업로드할 수 있습니다.')
+  }
   const objectKey = buildFeedbackImageKey(requestId, filename)
   const uploadUrl = await createPresignedUploadUrl(objectKey, contentType)
   return { uploadUrl, objectKey }
