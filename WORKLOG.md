@@ -1,5 +1,13 @@
 # 작업 기록
 
+## 2026-06-15 (Task 6)
+- 역할 판정 로직(resolveRole) TDD로 구현
+- 테스트 먼저 작성 후 실패 확인(모듈 없음), 구현 후 4개 테스트 통과 확인
+- 케이스: 이메일 일치 → coach / 대소문자·공백 무시 일치 → coach / 불일치 → member / coachEmail 미설정 → member
+- npx tsc --noEmit 타입 에러 없음
+- 변경된 파일: src/lib/auth/roles.ts, src/lib/auth/roles.test.ts
+- 다음 작업: Task 7 - 카카오 로그인 + 콜백 + 대시보드
+
 ## 2026-06-15 (Task 1)
 - Next.js 스캐폴드 및 Vitest 테스트 인프라 구성 완료
 - create-next-app@latest (next 16.2.9, React 19, TypeScript, Tailwind v4, App Router, src-dir) 설치
