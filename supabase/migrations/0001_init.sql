@@ -87,7 +87,7 @@ create table payments (
 
 -- ===== 역할 판정 헬퍼 =====
 create or replace function is_coach()
-returns boolean language sql stable as $$
+returns boolean language sql stable security definer as $$
   select exists (
     select 1 from profiles where id = auth.uid() and role = 'coach'
   );
@@ -106,7 +106,9 @@ alter table payments enable row level security;
 
 -- profiles: 본인 행 조회/수정, 코치는 전체 조회
 create policy "본인 프로필 조회" on profiles for select using (id = auth.uid() or is_coach());
-create policy "본인 프로필 수정" on profiles for update using (id = auth.uid());
+create policy "본인 프로필 수정" on profiles for update
+  using (id = auth.uid())
+  with check (id = auth.uid() and role = (select p.role from profiles p where p.id = auth.uid()));
 
 -- 분류 체계: 모두 조회 가능, 코치만 변경
 create policy "분류축 조회" on classification_axes for select using (true);
@@ -116,8 +118,9 @@ create policy "분류값 관리" on classification_tags for all using (is_coach(
 
 -- 코칭 요청: 본인 것 + 코치는 전체
 create policy "요청 조회" on coaching_requests for select using (member_id = auth.uid() or is_coach());
-create policy "요청 생성" on coaching_requests for insert with check (member_id = auth.uid());
-create policy "요청 수정(코치)" on coaching_requests for update using (is_coach());
+create policy "요청 생성" on coaching_requests for insert
+  with check (member_id = auth.uid() and status = 'in_review' and price is null);
+create policy "요청 수정(코치)" on coaching_requests for update using (is_coach()) with check (is_coach());
 
 -- 요청-분류 매핑: 코치만 변경, 조회는 해당 요청 접근권 따름
 create policy "요청분류 조회" on request_classifications for select using (
@@ -134,14 +137,28 @@ create policy "피드백 조회" on feedbacks for select using (
 );
 create policy "피드백 관리(코치)" on feedbacks for all using (is_coach()) with check (is_coach());
 
--- 피드백 첨부: 피드백 접근권 따름, 변경은 코치
+-- 피드백 첨부: 피드백 접근권 따름(게이트), 변경은 코치
 create policy "첨부 조회" on feedback_assets for select using (
-  exists (select 1 from feedbacks f where f.id = feedback_id)
+  exists (
+    select 1 from feedbacks f
+    where f.id = feedback_id
+      and (
+        is_coach()
+        or exists (
+          select 1 from coaching_requests r
+          where r.id = f.request_id
+            and r.member_id = auth.uid()
+            and f.published_at is not null
+        )
+      )
+  )
 );
 create policy "첨부 관리(코치)" on feedback_assets for all using (is_coach()) with check (is_coach());
 
--- 템플릿: 코치 전용
-create policy "템플릿(코치)" on feedback_templates for all using (is_coach()) with check (is_coach());
+-- 템플릿: 코치 본인 소유만
+create policy "템플릿(코치)" on feedback_templates for all
+  using (is_coach() and coach_id = auth.uid())
+  with check (is_coach() and coach_id = auth.uid());
 
 -- 결제: 본인 것 조회, 변경은 코치(추후)
 create policy "결제 조회" on payments for select using (
@@ -149,8 +166,10 @@ create policy "결제 조회" on payments for select using (
 );
 create policy "결제 관리(코치)" on payments for all using (is_coach()) with check (is_coach());
 
--- ===== API 역할에 테이블 접근 권한 부여 =====
+-- ===== 권한(GRANT): 최소 권한 원칙 + RLS가 행 단위 게이트 =====
 grant usage on schema public to anon, authenticated, service_role;
-grant all on all tables in schema public to anon, authenticated, service_role;
-grant all on all sequences in schema public to anon, authenticated, service_role;
-grant all on all routines in schema public to anon, authenticated, service_role;
+grant select on all tables in schema public to anon;
+grant select, insert, update, delete on all tables in schema public to authenticated;
+grant all on all tables in schema public to service_role;
+grant all on all sequences in schema public to authenticated, service_role;
+grant execute on all routines in schema public to anon, authenticated, service_role;
