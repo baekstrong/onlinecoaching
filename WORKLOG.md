@@ -1,5 +1,16 @@
 # 작업 기록
 
+## 2026-06-15 (Phase 2 Task 1 - R2 presigned 업로드 유틸리티)
+- TDD로 R2 presigned PUT URL 생성 유틸리티 구현
+- @aws-sdk/client-s3, @aws-sdk/s3-request-presigner 설치 (v3.1068.0)
+- .env.local에 R2 더미 환경변수 4개 추가 (gitignored - 커밋 제외)
+- src/lib/storage/r2.test.ts: 테스트 먼저 작성 → 실패 확인(모듈 없음)
+- src/lib/storage/r2.ts: buildVideoObjectKey(userId, filename) + createPresignedUploadUrl(key, contentType, expiresIn) 구현
+- 검증: npm test -- r2: 4/4 통과 / npm test: 5 files, 13 tests 모두 통과
+- 변경된 파일: src/lib/storage/r2.ts, src/lib/storage/r2.test.ts, package.json, package-lock.json
+- 커밋: 7ab4ccd (NOT pushed)
+- 다음 작업: Phase 2 Task 2 - 회원 신청 폼 / 영상 업로드 UI
+
 ## 2026-06-15 (2단계 계획 수립)
 - 2단계(회원 신청 + 영상 업로드) 구현 계획서 작성 (TDD 7개 Task)
 - 핵심 결정: R2 presigned PUT 직접 업로드, 도메인 로직 분리(통합 테스트), 회원이 자기 요청에 종목(회원 노출 축) 태그 삽입 허용 RLS 추가(0002)
