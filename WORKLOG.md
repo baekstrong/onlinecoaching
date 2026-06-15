@@ -1,5 +1,16 @@
 # 작업 기록
 
+## 2026-06-15 (Task 4)
+- 분류 체계(축·값) 초기 시드 추가
+- supabase/seed.sql 작성: 4개 축(운동 종목/문제 유형/신체 부위/회원 수준), 19개 태그
+- src/lib/db/seed.test.ts 작성: 축 4개 존재, 회원 노출 축 1개, 태그 총 19개 검증
+- npx supabase db reset 성공 (migration + seed 에러 없음)
+- npm test -- seed: 1 file, 3 tests 모두 통과
+- npm test: 4 files, 9 tests 모두 통과
+- 변경된 파일: supabase/seed.sql, src/lib/db/seed.test.ts
+- 커밋: 479e099
+- 다음 작업: Task 5 - Supabase 클라이언트 팩토리 (완료됨)
+
 ## 2026-06-15 (Task 3 - Security Fix)
 - RLS 정책 보안 강화: role 자가변경 차단, 첨부 파일 게이트, 요청 필드 고정, 템플릿 소유 한정, 최소권한 GRANT
 - is_coach() 함수에 security definer 추가 (RLS 재귀 스택 오버플로우 방지)
