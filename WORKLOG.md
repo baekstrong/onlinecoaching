@@ -1,5 +1,12 @@
 # 작업 기록
 
+## 2026-06-15 (2단계 계획 수립)
+- 2단계(회원 신청 + 영상 업로드) 구현 계획서 작성 (TDD 7개 Task)
+- 핵심 결정: R2 presigned PUT 직접 업로드, 도메인 로직 분리(통합 테스트), 회원이 자기 요청에 종목(회원 노출 축) 태그 삽입 허용 RLS 추가(0002)
+- 영상 키 소유 prefix 검증·Server Action 인증 등 보안 포함. presign은 더미 키로 구조 검증, 실제 업로드는 R2 키 준비 후 라이브 검증.
+- 변경된 파일: docs/superpowers/plans/2026-06-15-phase2-member-request-upload.md
+- 다음 작업: 2단계 Task 1(R2 유틸)부터 서브에이전트 구동 실행
+
 ## 2026-06-15 (1단계 기반 완료)
 - Phase 1(Foundation) 7개 Task 전부 완료·푸시. 서브에이전트 구동 + 2단계 검토(스펙·품질) + 자동 보안 리뷰 2회 반영.
 - 결과물: Next.js 16+TS+Tailwind+Vitest, Supabase 로컬 스택, DB 스키마 9테이블+RLS(보안 강화), 분류 시드(축4·태그19), Supabase SSR 클라이언트, 역할 판정, 카카오 로그인/콜백/역할별 대시보드.
