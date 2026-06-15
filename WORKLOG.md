@@ -1,5 +1,22 @@
 # 작업 기록
 
+## 2026-06-15 (Phase 4 Task 1 코드 리뷰 - 스펙 준수 + 보안 검증)
+- Stage 1 스펙 준수 전체 확인:
+  - src/app/requests/[id]/page.tsx: member authed createClient(ANON_KEY), auth gate(→/login), getRequestDetail→notFound, getFeedbackForRequest→published_at!=null 게이트, presign 영상+피드백 이미지(published만), 미발행시 "아직 피드백이 발행되지 않았습니다" 표시 — 모두 구현 확인
+  - src/app/requests/page.tsx: 목록 li 블록 전체 Link href="/requests/${r.id}" 래핑 확인
+  - npx tsc --noEmit: 에러 없음 / npm run build: 성공 (/requests/[id] Dynamic ƒ 라우트 포함) / npm test: 13 files 35 tests 전체 통과
+  - 스모크: curl GET /requests/some-id → 307 /login (미인증 리다이렉트 정상)
+- Stage 2 RLS 보안 검증 (node security-test.mjs, 임시 실행 후 삭제):
+  - TEST 1 — Member A가 미발행 피드백 조회: Result null → PASS (RLS feedbacks 정책 `published_at is not null` 조건으로 미발행 행 자체 차단)
+  - TEST 2 — Member B가 Member A 요청 조회: Result null → PASS (coaching_requests RLS 멤버 격리)
+  - [PUBLISH] 코치 발행 후
+  - TEST 3 — Member A가 발행 피드백 조회: Result {id, published_at set} → PASS (발행 후 정상 열람)
+  - ALL TESTS PASSED
+- 보안 평가: 미발행 피드백 행 자체가 RLS로 차단되므로 페이지의 published_at 체크는 이중 방어선. 실질적 데이터 유출 없음.
+- 변경된 파일: WORKLOG.md (기록 추가)
+- 특이사항: 커밋 대기 (Co-Authored-By: Claude Fable 5 트레일러 포함, NOT pushed)
+- 다음 작업: Phase 4 Task 2 - 피드백 발행 이메일 알림(Resend)
+
 ## 2026-06-15 (Phase 4 Task 1 - 회원 요청 상세 페이지: 영상·발행 피드백·이미지 열람)
 - src/app/requests/[id]/page.tsx 생성: 서버 컴포넌트 — 미인증 시 /login 리다이렉트, getRequestDetail(없으면 notFound), getFeedbackForRequest로 피드백 조회, published_at 여부로 발행 판정, Promise.all로 presigned 영상 URL + 피드백 이미지 URL 병렬 생성, 영상 재생(video 태그)/내 메모/코치 피드백+이미지 표시
 - src/app/requests/page.tsx 수정: 목록 `<li>` 블록에 `<Link href="/requests/${r.id}">` 래핑 추가 — 기존 헤더/새 신청 링크/빈 목록 안내 변경 없음
