@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto'
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
+import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 
 function r2Client(): S3Client {
@@ -30,6 +30,18 @@ export async function createPresignedUploadUrl(
     Bucket: process.env.R2_BUCKET!,
     Key: objectKey,
     ContentType: contentType,
+  })
+  return getSignedUrl(r2Client(), command, { expiresIn })
+}
+
+/** R2 객체를 재생/다운로드할 수 있는 presigned GET URL을 만든다. */
+export async function createPresignedDownloadUrl(
+  objectKey: string,
+  expiresIn = 3600,
+): Promise<string> {
+  const command = new GetObjectCommand({
+    Bucket: process.env.R2_BUCKET!,
+    Key: objectKey,
   })
   return getSignedUrl(r2Client(), command, { expiresIn })
 }

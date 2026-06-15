@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { buildVideoObjectKey, createPresignedUploadUrl } from './r2'
+import { buildVideoObjectKey, createPresignedUploadUrl, createPresignedDownloadUrl } from './r2'
 
 describe('buildVideoObjectKey', () => {
   it('회원 prefix 아래 확장자를 보존한 고유 키를 만든다', () => {
@@ -24,6 +24,15 @@ describe('createPresignedUploadUrl', () => {
   it('버킷·키·서명이 포함된 PUT용 서명 URL을 반환한다', async () => {
     const key = 'requests/u1/abc.mp4'
     const url = await createPresignedUploadUrl(key, 'video/mp4')
+    expect(url).toContain('coaching-videos')
+    expect(url).toContain('requests/u1/abc.mp4')
+    expect(url).toContain('X-Amz-Signature')
+  })
+})
+
+describe('createPresignedDownloadUrl', () => {
+  it('버킷·키·서명이 포함된 GET용 서명 URL을 반환한다', async () => {
+    const url = await createPresignedDownloadUrl('requests/u1/abc.mp4')
     expect(url).toContain('coaching-videos')
     expect(url).toContain('requests/u1/abc.mp4')
     expect(url).toContain('X-Amz-Signature')
