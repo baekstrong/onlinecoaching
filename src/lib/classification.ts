@@ -38,16 +38,18 @@ export type AxisWithTags = {
 
 /** 모든 분류 축과 태그를 sort_order 순서로 반환(코치 태깅 UI용). */
 export async function getAllAxesWithTags(supabase: SupabaseClient): Promise<AxisWithTags[]> {
-  const { data: axes } = await supabase
+  const { data: axes, error: axesError } = await supabase
     .from('classification_axes')
     .select('id, name, is_member_facing, allow_multiple')
     .order('sort_order')
+  if (axesError) throw new Error(axesError.message)
   if (!axes) return []
 
-  const { data: tags } = await supabase
+  const { data: tags, error: tagsError } = await supabase
     .from('classification_tags')
     .select('id, label, axis_id')
     .order('sort_order')
+  if (tagsError) throw new Error(tagsError.message)
 
   return axes.map((a) => ({
     ...a,

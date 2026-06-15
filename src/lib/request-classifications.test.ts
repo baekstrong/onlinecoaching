@@ -53,4 +53,16 @@ describe('요청 분류 CRUD (코치)', () => {
     const tags = await getRequestClassifications(coach.client, req.id)
     expect(tags.length).toBeGreaterThanOrEqual(1) // 신청 시 단 종목 태그
   })
+
+  it('회원은 addRequestClassification으로 코치 전용 태그를 달 수 없다(RLS 차단)', async () => {
+    const m = await createSignedInMember(`rc_block_${Date.now()}@test.local`)
+    created.push(m.id)
+    const req = await createCoachingRequest(m.client, {
+      memberId: m.id, tagId: await squatTagId(), note: 'x', objectKey: `requests/${m.id}/v.mp4`,
+    })
+    // 문제 유형(코치 전용 축) 태그는 회원이 추가 시도하면 RLS에 막혀 throw
+    await expect(
+      addRequestClassification(m.client, req.id, await problemTagId()),
+    ).rejects.toThrow()
+  })
 })
