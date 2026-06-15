@@ -1,5 +1,21 @@
 # 작업 기록
 
+## 2026-06-15 (Phase 3b Task 4 - 코치 피드백 Server Action)
+- src/app/coach/actions.ts에 피드백/이미지 관련 5개 Server Action 추가
+  - saveFeedback(requestId, text): saveFeedbackDraft 호출, { id } 반환
+  - publishFeedbackAction(requestId): getFeedbackForRequest 후 publishFeedback 호출, 피드백 없으면 예외
+  - requestFeedbackImageUpload(requestId, filename, contentType): image/* MIME 서버측 검증, buildFeedbackImageKey+createPresignedUploadUrl 반환
+  - attachFeedbackImage(feedbackId, objectKey): addFeedbackAsset 호출
+  - detachFeedbackImage(feedbackId, objectKey): removeFeedbackAsset 호출
+- 모든 Action이 assertCoach()를 통과하여 코치 권한 경계 보장
+- 이미지 MIME 검증(image/ prefix)은 서버측 방어선으로 유지
+- npx tsc --noEmit: 에러 없음
+- npm run build: 성공 (Compiled in 1753ms, 전체 라우트 포함)
+- npm test: 13 files, 35 tests 전체 통과 (기존 테스트 깨지지 않음)
+- 변경된 파일: src/app/coach/actions.ts
+- 커밋: ea0be52 (NOT pushed)
+- 다음 작업: Phase 3b Task 5 - 템플릿 관리 페이지
+
 ## 2026-06-15 (Phase 3b Task 3 - 피드백 draft/발행/이미지 자산 도메인 로직)
 - TDD: 테스트 먼저 작성(모듈 없음 → FAIL), 구현 후 PASS 2/2 확인
 - src/lib/feedback.test.ts: 2개 테스트 (draft 저장(upsert)·조회·발행 / 이미지 자산 추가/조회/삭제)
