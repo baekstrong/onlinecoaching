@@ -1,5 +1,16 @@
 # 작업 기록
 
+## 2026-06-15 (Phase 3a Task 4 - 전체 분류 축 조회 + 요청 분류 추가/삭제/조회)
+- TDD: 테스트 먼저 작성(모듈 없음 → FAIL), 구현 후 PASS 2/2 확인
+- src/lib/classification.ts: AxisWithTags 타입 + getAllAxesWithTags(supabase) 추가 — 모든 축과 태그를 sort_order 순서로 반환(코치 태깅 UI용)
+- src/lib/request-classifications.test.ts: 2개 테스트 (코치가 코치 전용 축 태그 추가/삭제 / 회원이 만든 종목 태그도 코치가 조회)
+- src/lib/request-classifications.ts: RequestClassification 타입, getRequestClassifications, addRequestClassification(upsert, onConflict: request_id,tag_id), removeRequestClassification 구현
+- npm test -- request-classifications: 2/2 통과 / npm test: 11 files, 28 tests 전체 통과
+- npx tsc --noEmit: 에러 없음
+- 변경된 파일: src/lib/classification.ts, src/lib/request-classifications.ts, src/lib/request-classifications.test.ts
+- 커밋: 26084eb (NOT pushed)
+- 다음 작업: Phase 3a Task 5 - 코치 Server Action
+
 ## 2026-06-15 (Phase 3a Task 3 - 코치용 요청 목록(상태필터)/상세 도메인 로직)
 - TDD: 테스트 먼저 작성(함수 미존재 → FAIL 3/3), 구현 후 PASS 3/3 확인
 - src/lib/requests-coach.test.ts: listAllRequests(코치는 여러 회원 요청 모두 조회 / 상태 필터) + getRequestDetail(코치가 임의 요청 상세 조회) 3개 테스트
