@@ -1,15 +1,19 @@
 'use client'
 
+import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 
 export default function LoginPage() {
   const supabase = createClient()
+  const [error, setError] = useState(false)
 
   async function signInWithKakao() {
-    await supabase.auth.signInWithOAuth({
+    setError(false)
+    const { error } = await supabase.auth.signInWithOAuth({
       provider: 'kakao',
       options: { redirectTo: `${window.location.origin}/auth/callback` },
     })
+    if (error) setError(true)
   }
 
   return (
@@ -22,6 +26,9 @@ export default function LoginPage() {
       >
         카카오로 로그인
       </button>
+      {error && (
+        <p className="text-sm text-red-500">로그인에 실패했습니다. 잠시 후 다시 시도해주세요.</p>
+      )}
     </main>
   )
 }
