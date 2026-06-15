@@ -1,5 +1,16 @@
 # 작업 기록
 
+## 2026-06-15 (Task 5)
+- Supabase 브라우저/서버/미들웨어 클라이언트 팩토리 구현
+- @supabase/ssr, @supabase/supabase-js 패키지 설치
+- src/lib/supabase/client.ts: createBrowserClient 래퍼 (브라우저용)
+- src/lib/supabase/server.ts: createServerClient 래퍼 (서버 컴포넌트용, await cookies())
+- src/lib/supabase/middleware.ts: updateSession 헬퍼 (세션 갱신 + /dashboard 보호 라우트)
+- npx tsc --noEmit 에러 없음 / npm test 5개 테스트 모두 통과
+- 변경된 파일: src/lib/supabase/client.ts, src/lib/supabase/server.ts, src/lib/supabase/middleware.ts, package.json, package-lock.json
+- 커밋: 2a1dbfd
+- 다음 작업: Task 6 - 역할 판정 로직
+
 ## 2026-06-15 (Task 6)
 - 역할 판정 로직(resolveRole) TDD로 구현
 - 테스트 먼저 작성 후 실패 확인(모듈 없음), 구현 후 4개 테스트 통과 확인
