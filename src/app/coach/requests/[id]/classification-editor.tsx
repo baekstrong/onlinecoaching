@@ -32,6 +32,7 @@ export function ClassificationEditor({
         else next.add(tagId)
         return next
       })
+      // 참고: 같은 태그는 pending 중 비활성화되므로 isOn 기준 갱신이 안전하다.
     } catch (err) {
       setError(err instanceof Error ? err.message : '변경에 실패했습니다.')
     } finally {

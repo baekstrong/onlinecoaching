@@ -1,7 +1,5 @@
 import Link from 'next/link'
-import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
-import { isCurrentUserCoach } from '@/lib/auth/coach'
+import { requireCoachPage } from '../guard'
 import { listAllRequests } from '@/lib/requests'
 
 const STATUS_LABEL: Record<string, string> = {
@@ -15,10 +13,7 @@ export default async function CoachRequestsPage({
 }: {
   searchParams: Promise<{ status?: string }>
 }) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/login')
-  if (!(await isCurrentUserCoach(supabase))) redirect('/dashboard')
+  const supabase = await requireCoachPage()
 
   const { status } = await searchParams
   const requests = await listAllRequests(supabase, status)

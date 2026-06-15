@@ -1,10 +1,9 @@
-import { redirect, notFound } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
-import { isCurrentUserCoach } from '@/lib/auth/coach'
+import { notFound } from 'next/navigation'
+import { requireCoachPage } from '../../guard'
 import { getRequestDetail } from '@/lib/requests'
 import { getAllAxesWithTags } from '@/lib/classification'
 import { getRequestClassifications } from '@/lib/request-classifications'
-import { getRequestVideoUrl } from '../../actions'
+import { createPresignedDownloadUrl } from '@/lib/storage/r2'
 import { ClassificationEditor } from './classification-editor'
 
 export default async function CoachRequestDetailPage({
@@ -12,19 +11,17 @@ export default async function CoachRequestDetailPage({
 }: {
   params: Promise<{ id: string }>
 }) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/login')
-  if (!(await isCurrentUserCoach(supabase))) redirect('/dashboard')
+  const supabase = await requireCoachPage()
 
   const { id } = await params
   const request = await getRequestDetail(supabase, id)
   if (!request) notFound()
 
+  // 가드를 이미 통과했고 요청 행도 확보했으므로, 보유한 영상 키로 직접 presign(중복 조회 방지)
   const [axes, current, videoUrl] = await Promise.all([
     getAllAxesWithTags(supabase),
     getRequestClassifications(supabase, id),
-    getRequestVideoUrl(id),
+    request.video_object_key ? createPresignedDownloadUrl(request.video_object_key) : Promise.resolve(null),
   ])
   const selectedTagIds = current.map((c) => c.tag_id)
 
