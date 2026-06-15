@@ -192,3 +192,9 @@ v1에서는 분류·누적·필터/검색까지 구현. 통계 대시보드·AI 
 - 실시간 화상 코칭
 - 다중 코치 / 코치 마켓플레이스
 - 회원 간 커뮤니티 기능
+
+## 운영 메모 (4단계)
+- 영상 90일 보관: 외부 스케줄러(예: Vercel Cron, GitHub Actions, cron-job.org)가 매일 1회
+  `POST /api/cron/expire-videos` 를 `Authorization: Bearer $CRON_SECRET` 헤더로 호출한다.
+- 추가 안전망으로 Cloudflare R2 버킷에 90일 라이프사이클 규칙을 설정하면, 앱이 놓친 객체(삭제 실패분)도 정리된다.
+- 이메일 알림: Resend 키(`RESEND_API_KEY`)와 검증된 발신 도메인(`EMAIL_FROM`) 설정 시 활성화.
