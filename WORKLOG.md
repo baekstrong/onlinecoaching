@@ -1,5 +1,16 @@
 # 작업 기록
 
+## 2026-06-15 (Phase 3a Task 7 - 코치 요청 상세 페이지 + 분류 태깅 UI)
+- src/app/coach/requests/[id]/page.tsx 생성: 서버 컴포넌트 — 미인증 시 /login, 비코치 시 /dashboard 리다이렉트, params(Promise) await, getRequestDetail로 요청 상세 로드(없으면 notFound), Promise.all로 getAllAxesWithTags+getRequestClassifications+getRequestVideoUrl 병렬 호출, 영상 재생(video 태그) 및 회원 메모 표시, ClassificationEditor 전달
+- src/app/coach/requests/[id]/classification-editor.tsx 생성: 클라이언트 컴포넌트 — Set 기반 optimistic 태그 상태, toggle 함수(서버 액션 완료 후 로컬 상태 갱신), pending/error 상태 관리, 축별 태그 버튼(선택=검정, 미선택=흰색) UI
+- .next/types/ macOS Finder 중복 파일 3개 삭제 (tsc 아티팩트 충돌 해소)
+- npx tsc --noEmit: 에러 없음
+- npm run build: 성공 — /coach/requests/[id](Dynamic ƒ) 라우트 테이블 포함 확인
+- npm test: 11 files, 29 tests 모두 통과
+- 변경된 파일: src/app/coach/requests/[id]/page.tsx, src/app/coach/requests/[id]/classification-editor.tsx
+- 커밋: 37c7cda (NOT pushed)
+- 다음 작업: Phase 3b (템플릿 + 리치 피드백 발행) 또는 사용자 검토
+
 ## 2026-06-15 (Phase 3a Task 6 - 코치 요청 큐 페이지 + 대시보드 코치 링크)
 - src/app/coach/requests/page.tsx 생성: 서버 컴포넌트 — 미인증 시 /login 리다이렉트, 비코치 시 /dashboard 리다이렉트, searchParams(Promise) await, listAllRequests로 상태 필터 목록 로드, STATUS_LABEL 한국어 매핑, 상태 필터 nav(전체/검토중/완료)
 - src/app/dashboard/page.tsx 수정: 링크 블록을 role-aware로 교체 — coach면 '요청 큐 보기'(/coach/requests), 아니면 기존 '코칭 신청하기'+'내 신청 보기' 유지
