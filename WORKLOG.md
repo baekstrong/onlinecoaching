@@ -1,5 +1,20 @@
 # 작업 기록
 
+## 2026-06-15 (Phase 4 Task 3 - 90일 영상 보관 만료 도메인(R2 객체 삭제 + 키 제거))
+- TDD 순서: retention.test.ts 먼저 작성(./retention 없음 → FAIL 확인) → retention.ts 구현 → 1/1 PASS
+- src/lib/storage/r2.ts 수정: DeleteObjectCommand import 추가, deleteObject(objectKey) 헬퍼 추가 (R2 객체 삭제)
+- src/lib/retention.ts 생성: expireOldRequestVideos(supabase, deleteFn, now) — cutoff(90일 이전) 기준 video_object_key 있는 요청 조회, deleteFn(key) 호출 후 video_object_key를 null로 업데이트, 만료 처리 count 반환
+- src/lib/retention.test.ts 생성: 100일 전 요청(old) + 현재 요청(new) 두 개 생성, expireOldRequestVideos 호출 후 count=1, old키 삭제, new키 유지 검증
+- 의존성 주입 패턴: deleteFn 파라미터로 주입(테스트는 mock, 프로덕션은 deleteObject 사용) — real R2 불필요
+- now 파라미터 주입: 테스트 시간 고정 가능
+- 검증:
+  - npm test -- retention: 1/1 PASS
+  - npm test: 15 files, 37 tests 전체 통과
+  - npx tsc --noEmit: 에러 없음
+- 변경된 파일: src/lib/storage/r2.ts, src/lib/retention.ts (신규), src/lib/retention.test.ts (신규)
+- 커밋: 9adbc6e (NOT pushed)
+- 다음 작업: Phase 4 Task 4 - 보관 cron 라우트(CRON_SECRET)
+
 ## 2026-06-15 (Phase 4 Task 2 - 피드백 발행 이메일 알림(Resend))
 - TDD 순서: email.test.ts 먼저 작성(./email 없음 → FAIL 확인) → email.ts 구현 → 1/1 PASS
 - resend@6.12.4 설치 (npm install resend)
