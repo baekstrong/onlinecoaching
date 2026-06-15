@@ -11,6 +11,15 @@ async function squatTagId(): Promise<string> {
   return data!.id as string
 }
 
+async function coachAxisTagId(): Promise<string> {
+  const admin = adminClient()
+  const { data: axis } = await admin
+    .from('classification_axes').select('id').eq('is_member_facing', false).limit(1).single()
+  const { data: tag } = await admin
+    .from('classification_tags').select('id').eq('axis_id', axis!.id).limit(1).single()
+  return tag!.id as string
+}
+
 describe('createCoachingRequest', () => {
   it('영상키·메모·종목으로 요청을 만들고 분류를 연결한다', async () => {
     const m = await createSignedInMember(`req_a_${Date.now()}@test.local`)
@@ -36,6 +45,21 @@ describe('createCoachingRequest', () => {
         memberId: m.id, tagId: await squatTagId(), note: 'x', objectKey: 'requests/someone-else/clip.mp4',
       }),
     ).rejects.toThrow()
+  })
+
+  it('분류 연결이 실패하면 요청도 롤백된다(고아 요청 없음)', async () => {
+    const m = await createSignedInMember(`req_atomic_${Date.now()}@test.local`)
+    created.push(m.id)
+    // 코치 전용 축 태그는 회원이 달 수 없음 → 함수 내 분류 INSERT가 RLS에 막혀 전체 롤백
+    await expect(
+      createCoachingRequest(m.client, {
+        memberId: m.id, tagId: await coachAxisTagId(), note: 'x', objectKey: `requests/${m.id}/x.mp4`,
+      }),
+    ).rejects.toThrow()
+    const admin = adminClient()
+    const { count } = await admin
+      .from('coaching_requests').select('*', { count: 'exact', head: true }).eq('member_id', m.id)
+    expect(count).toBe(0) // 고아 요청이 남지 않아야 함
   })
 })
 
