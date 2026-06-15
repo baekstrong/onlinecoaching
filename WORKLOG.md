@@ -1,5 +1,18 @@
 # 작업 기록
 
+## 2026-06-15 (Phase 3a Task 5 - 코치 Server Action: 분류 태깅 + 영상 URL)
+- src/app/coach/actions.ts 생성: 'use server' — 3개 Server Action 구현
+  - assertCoach(): 내부 헬퍼 — createClient() + isCurrentUserCoach() 로 코치 권한 경계 강제
+  - tagRequest(requestId, tagId): assertCoach() 후 addRequestClassification() 호출
+  - untagRequest(requestId, tagId): assertCoach() 후 removeRequestClassification() 호출
+  - getRequestVideoUrl(requestId): assertCoach() 후 getRequestDetail() → video_object_key → createPresignedDownloadUrl() 반환 (없으면 null)
+- npx tsc --noEmit: 에러 없음
+- npm run build: 성공 (Compiled in 1762ms, 9/9 static pages, 기존 라우트 전부 포함)
+- npm test: 11 files, 29 tests 모두 통과 (기존 테스트 깨지지 않음)
+- 변경된 파일: src/app/coach/actions.ts
+- 커밋: fdac82a (NOT pushed)
+- 다음 작업: Phase 3a Task 6 - 요청 큐 페이지
+
 ## 2026-06-15 (Phase 3a Task 4 - 전체 분류 축 조회 + 요청 분류 추가/삭제/조회)
 - TDD: 테스트 먼저 작성(모듈 없음 → FAIL), 구현 후 PASS 2/2 확인
 - src/lib/classification.ts: AxisWithTags 타입 + getAllAxesWithTags(supabase) 추가 — 모든 축과 태그를 sort_order 순서로 반환(코치 태깅 UI용)
