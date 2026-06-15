@@ -6,6 +6,9 @@ const RETENTION_DAYS = 90
  * 90일 지난 영상을 만료시킨다: R2 객체 삭제 후 video_object_key를 null로.
  * deleteFn은 R2 삭제 함수(테스트에서 주입). admin(service_role) 클라이언트로 호출.
  * 반환: 만료 처리한 요청 수.
+ *
+ * 주의: DB 갱신 오류가 나면 throw하며, 그 시점까지 처리된 행은 이미 반영된다(부분 처리).
+ * 다음 실행에서 남은 행이 재시도되므로 데이터 손상은 없다.
  */
 export async function expireOldRequestVideos(
   supabase: SupabaseClient,
@@ -26,6 +29,8 @@ export async function expireOldRequestVideos(
     try {
       await deleteFn(key)
     } catch (e) {
+      // 삭제 실패해도 DB 키는 비운다(무한 재시도 방지). 남은 고아 객체는 R2 버킷
+      // 라이프사이클 규칙이 정리하는 것을 안전망으로 둔다(운영 메모 참조).
       console.error('R2 객체 삭제 실패:', key, e)
     }
     const { error: updError } = await supabase

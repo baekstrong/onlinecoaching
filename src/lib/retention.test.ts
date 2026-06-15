@@ -30,6 +30,7 @@ describe('expireOldRequestVideos', () => {
     const count = await expireOldRequestVideos(admin, async (key) => { deleted.push(key) }, new Date())
 
     expect(count).toBe(1)
+    expect(deleted).toHaveLength(1)
     expect(deleted).toContain(`requests/${m.id}/old.mp4`)
 
     const { data: oldAfter } = await admin.from('coaching_requests').select('video_object_key').eq('id', oldReq.id).single()
