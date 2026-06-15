@@ -10,8 +10,8 @@
 
 **Prerequisites (실행 환경):**
 - Node.js 20+ / npm
-- Docker Desktop 실행 중 (Supabase 로컬 스택 구동에 필요)
-- Supabase CLI 설치: `npm i -g supabase` 또는 `brew install supabase/tap/supabase`
+- Docker Desktop 실행 중 (Supabase 로컬 스택 구동에 필요) — **사용자 설치 필요**
+- Supabase CLI: 프로젝트 devDependency로 설치됨(`supabase` 패키지) → 명령은 `npx supabase ...`로 실행
 
 ---
 
@@ -162,7 +162,7 @@ git commit -m "chore: Next.js 스캐폴드 및 Vitest 테스트 인프라 구성
 - [ ] **Step 1: Supabase 로컬 프로젝트 초기화**
 
 ```bash
-supabase init
+npx supabase init
 ```
 
 `supabase/config.toml`이 생성됨. 프롬프트(VS Code 설정 등)는 기본값(N)으로.
@@ -170,7 +170,7 @@ supabase init
 - [ ] **Step 2: 로컬 스택 기동**
 
 ```bash
-supabase start
+npx supabase start
 ```
 
 출력되는 `API URL`(보통 `http://127.0.0.1:54321`)과 `anon key`, `service_role key`를 기록해 둠. (Docker 필요)
@@ -197,7 +197,7 @@ R2_BUCKET=
 
 - [ ] **Step 4: 실제 로컬 값으로 .env.local 작성**
 
-`.env.local` (커밋 안 함). `supabase start`가 출력한 값으로 채움:
+`.env.local` (커밋 안 함). `npx supabase start`가 출력한 값으로 채움:
 
 ```bash
 NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321
@@ -383,7 +383,7 @@ create policy "결제 관리(코치)" on payments for all using (is_coach()) wit
 - [ ] **Step 2: 마이그레이션 적용**
 
 ```bash
-supabase db reset
+npx supabase db reset
 ```
 
 Expected: 마이그레이션과 (다음 Task의) seed가 오류 없이 적용됨. 이 시점엔 seed가 비어 있어도 무방.
@@ -438,7 +438,7 @@ config({ path: '.env.local' })
 
 - [ ] **Step 5: 테스트 실행 → 통과 확인**
 
-`supabase start`가 떠 있는 상태에서:
+`npx supabase start`가 떠 있는 상태에서:
 
 Run: `npm test -- schema`
 Expected: PASS — 9개 테이블 모두 select 성공.
@@ -488,7 +488,7 @@ join (values
 - [ ] **Step 2: 시드 재적용**
 
 ```bash
-supabase db reset
+npx supabase db reset
 ```
 
 Expected: 마이그레이션 + 시드가 오류 없이 적용됨.
