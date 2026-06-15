@@ -1,5 +1,13 @@
 # 작업 기록
 
+## 2026-06-15 (Phase 2 Task 2 - 회원 종목 분류 RLS 정책 추가)
+- migration 0002: 회원이 자기 요청에 회원 노출 축(운동 종목) 태그만 삽입할 수 있는 RLS 정책 추가
+- src/test-helpers/users.ts: 재사용 가능한 테스트 헬퍼 (adminClient, createSignedInMember, deleteUser)
+- src/lib/requests-rls.test.ts: 회원 RLS 검증 테스트 2건 (회원 노출 태그 허용 / 코치 전용 태그 차단)
+- npx supabase db reset: 0001+0002 마이그레이션 + 시드 오류 없이 완료
+- npm test -- requests-rls: 2/2 통과 / npm test: 6 files, 15 tests 전체 통과
+- 변경된 파일: supabase/migrations/0002_member_classification.sql, src/test-helpers/users.ts, src/lib/requests-rls.test.ts
+
 ## 2026-06-15 (Phase 2 Task 1 - R2 presigned 업로드 유틸리티)
 - TDD로 R2 presigned PUT URL 생성 유틸리티 구현
 - @aws-sdk/client-s3, @aws-sdk/s3-request-presigner 설치 (v3.1068.0)
