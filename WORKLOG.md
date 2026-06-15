@@ -1,5 +1,16 @@
 # 작업 기록
 
+## 2026-06-15 (Phase 3b Task 3 - 피드백 draft/발행/이미지 자산 도메인 로직)
+- TDD: 테스트 먼저 작성(모듈 없음 → FAIL), 구현 후 PASS 2/2 확인
+- src/lib/feedback.test.ts: 2개 테스트 (draft 저장(upsert)·조회·발행 / 이미지 자산 추가/조회/삭제)
+- src/lib/feedback.ts: Feedback/FeedbackAsset 타입, saveFeedbackDraft(upsert on request_id UNIQUE), getFeedbackForRequest, publishFeedback, addFeedbackAsset, listFeedbackAssets, removeFeedbackAsset 구현
+- body_rich jsonb({ text }) ↔ Feedback.text 매핑, published_at 발행 처리, feedback_assets object_key CRUD
+- npm test -- "feedback.test": 2/2 통과 / npm test: 13 files, 35 tests 전체 통과
+- npx tsc --noEmit: 에러 없음
+- 변경된 파일: src/lib/feedback.ts, src/lib/feedback.test.ts
+- 커밋: 0b1bc9a (NOT pushed)
+- 다음 작업: Phase 3b Task 4 - 코치 피드백 Server Action
+
 ## 2026-06-15 (Phase 3b Task 2 - 피드백 템플릿 CRUD 도메인 로직(코치))
 - TDD: 테스트 먼저 작성(모듈 없음 → FAIL), 구현 후 PASS 2/2 확인
 - src/lib/templates.test.ts: 2개 테스트 (코치 템플릿 생성/수정/삭제/목록 조회 / 회원 RLS 차단)
