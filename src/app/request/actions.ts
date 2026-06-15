@@ -13,6 +13,11 @@ export async function requestUploadUrl(
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('로그인이 필요합니다.')
 
+  // 서버측 방어: 영상 MIME만 허용(클라이언트 검증 우회 방지)
+  if (!contentType.startsWith('video/')) {
+    throw new Error('영상 파일만 업로드할 수 있습니다.')
+  }
+
   const objectKey = buildVideoObjectKey(user.id, filename)
   const uploadUrl = await createPresignedUploadUrl(objectKey, contentType)
   return { uploadUrl, objectKey }
