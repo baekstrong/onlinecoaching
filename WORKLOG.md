@@ -1,5 +1,18 @@
 # 작업 기록
 
+## 2026-06-15 (Phase 2 Task 5 - 영상 업로드 URL 발급/요청 제출 Server Action)
+- src/app/request/actions.ts 생성: 'use server' 파일, 두 Server Action 구현
+  - requestUploadUrl(filename, contentType): 로그인 회원의 본인 prefix presigned PUT URL + objectKey 반환
+  - submitCoachingRequest({ tagId, note, objectKey }): 업로드된 영상 key로 코칭 요청 생성, { id } 반환
+- 두 Action 모두 supabase.auth.getUser() 검증 → 미인증 시 '로그인이 필요합니다.' 예외 (auth boundary)
+- 기존 모듈 그대로 연결: createClient (server.ts), buildVideoObjectKey + createPresignedUploadUrl (r2.ts), createCoachingRequest (requests.ts)
+- npx tsc --noEmit: 에러 없음
+- npm run build: 성공 (컴파일 1741ms, 정적 7페이지 생성 완료)
+- npm test: 8 files, 20 tests 모두 통과 (기존 테스트 깨지지 않음, Server Action은 request-context 의존으로 단위 테스트 없음)
+- 변경된 파일: src/app/request/actions.ts
+- 커밋: 6b5bfe1 (NOT pushed)
+- 다음 작업: Phase 2 Task 6 - 회원 신청 폼 UI (Server Action 호출)
+
 ## 2026-06-15 (Phase 2 Task 4 Bugfix - 코칭 요청 원자적 RPC 전환, 고아 요청 방지)
 - 버그: createCoachingRequest의 수동 롤백 DELETE가 RLS에 막혀 고아 요청 행이 남는 문제 수정
 - supabase/migrations/0003_atomic_request.sql: create_coaching_request(p_tag_id, p_note, p_object_key) PL/pgSQL 함수 추가 (security invoker, 두 INSERT 원자적 트랜잭션, authenticated에만 EXECUTE 권한)
