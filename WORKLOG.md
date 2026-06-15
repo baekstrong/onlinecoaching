@@ -1,5 +1,18 @@
 # 작업 기록
 
+## 2026-06-15 (Phase 4 Task 1 - 회원 요청 상세 페이지: 영상·발행 피드백·이미지 열람)
+- src/app/requests/[id]/page.tsx 생성: 서버 컴포넌트 — 미인증 시 /login 리다이렉트, getRequestDetail(없으면 notFound), getFeedbackForRequest로 피드백 조회, published_at 여부로 발행 판정, Promise.all로 presigned 영상 URL + 피드백 이미지 URL 병렬 생성, 영상 재생(video 태그)/내 메모/코치 피드백+이미지 표시
+- src/app/requests/page.tsx 수정: 목록 `<li>` 블록에 `<Link href="/requests/${r.id}">` 래핑 추가 — 기존 헤더/새 신청 링크/빈 목록 안내 변경 없음
+- RLS 경계 준수: member의 authed createClient() 사용, service-role client 미사용 — getFeedbackForRequest/listFeedbackAssets는 PUBLISHED 피드백만 본인 요청에서 반환
+- 검증:
+  - npx tsc --noEmit: 에러 없음
+  - npm run build: 성공 — /requests/[id](Dynamic ƒ) 라우트 테이블 포함 확인
+  - npm test: 13 files, 35 tests 전체 통과
+  - 스모크: curl GET /requests/some-id → 307 http://localhost:3000/login (미인증 리다이렉트 정상)
+- 변경된 파일: src/app/requests/[id]/page.tsx (신규), src/app/requests/page.tsx
+- 커밋: 7c6a92f (NOT pushed)
+- 다음 작업: Phase 4 Task 2 - 피드백 발행 이메일 알림(Resend)
+
 ## 2026-06-15 (4단계 계획 수립)
 - 4단계(열람+알림+보관) 구현 계획서 작성 (TDD 4개 Task)
 - Task: 회원 요청 상세(발행 피드백·영상·이미지 열람) / 피드백 발행 이메일(Resend, 키없으면 no-op) / 90일 영상 만료 도메인(R2 삭제+키null) / 보관 cron 라우트(CRON_SECRET)
