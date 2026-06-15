@@ -1,5 +1,18 @@
 # 작업 기록
 
+## 2026-06-15 (Phase 3b Task 5 - 코치 템플릿 관리 페이지 + 대시보드 링크)
+- src/app/coach/actions.ts: 템플릿 import 추가 + 3개 Server Action 추가 (createTemplateAction, updateTemplateAction, deleteTemplateAction) — 모두 assertCoach() 통과
+- src/app/coach/templates/page.tsx 생성: 서버 컴포넌트 — requireCoachPage() 후 listTemplates() 로드, TemplateManager에 전달
+- src/app/coach/templates/template-manager.tsx 생성: 클라이언트 컴포넌트 — 생성/수정/삭제 CRUD 폼, editingId 상태로 인라인 수정, router.refresh()로 목록 갱신
+- src/app/dashboard/page.tsx: 코치 브랜치에 '피드백 템플릿'(/coach/templates) 링크 추가 (기존 '요청 큐 보기' 유지)
+- npx tsc --noEmit: 에러 없음
+- npm run build: 성공 — /coach/templates(Dynamic ƒ) 라우트 테이블 포함 확인
+- npm test: 13 files, 35 tests 전체 통과
+- 스모크 테스트: curl /coach/templates → 307 http://localhost:3001/login (미인증 리다이렉트 정상)
+- 변경된 파일: src/app/coach/actions.ts, src/app/coach/templates/page.tsx, src/app/coach/templates/template-manager.tsx, src/app/dashboard/page.tsx
+- 커밋: 623c2e4 (NOT pushed)
+- 다음 작업: Phase 3b Task 6 - 요청 상세 피드백 에디터
+
 ## 2026-06-15 (Phase 3b Task 4 - 코치 피드백 Server Action)
 - src/app/coach/actions.ts에 피드백/이미지 관련 5개 Server Action 추가
   - saveFeedback(requestId, text): saveFeedbackDraft 호출, { id } 반환
