@@ -1,5 +1,18 @@
 # 작업 기록
 
+## 2026-06-15 (★ v1 MVP 전체 완료 ★)
+- 4단계(열람+알림+보관) 4개 Task 완료·푸시. 이로써 1~4단계 v1 전체 완성.
+- 4단계 결과물: 회원 요청 상세(발행 피드백·영상·이미지 열람), 피드백 발행 이메일(Resend, no-op), 90일 영상 만료 도메인(R2 삭제+키null, DI), 보관 cron 라우트(CRON_SECRET).
+- **전체 라이프사이클 E2E 27검사 통과**: 신청→큐→분류→템플릿→피드백→발행→회원열람→영상만료→보안(타회원 격리·작성 차단).
+- 누적 검증: npm test 37/37(15파일), tsc 클린, build 성공(11라우트), 마이그레이션 0001~0004, TODO/잔존심볼 없음.
+- **남은 것 = 라이브 검증(사용자 키/설정 필요), 코드는 전부 완성**:
+  1. 카카오 로그인: 카카오 개발자 키 + Supabase Auth 카카오 활성화
+  2. R2: Cloudflare R2 버킷·키 → 영상/이미지 실제 업로드·재생
+  3. 이메일: RESEND_API_KEY + EMAIL_FROM(검증 도메인)
+  4. 보관: CRON_SECRET + 외부 스케줄러가 매일 POST /api/cron/expire-videos
+  5. 배포: APP_URL 설정 + Vercel 등 배포
+- 추후(YAGNI): 결제(PortOne), 카카오 알림톡, 영상 타임스탬프 마킹, 통계 대시보드.
+
 ## 2026-06-15 (Phase 4 Task 4 - 보관 만료 cron 라우트(CRON_SECRET 보호) + 운영 메모)
 - src/app/api/cron/expire-videos/route.ts 생성: POST 전용 — Authorization: Bearer $CRON_SECRET 헤더 검증, !secret || auth !== Bearer ${secret} 시 401, 통과 시 createAdmin(service_role) + expireOldRequestVideos(admin, deleteObject, new Date()) 호출, { expired: count } 반환
 - CRON_SECRET 미설정 시 무조건 401 (보호 해제 방지)
