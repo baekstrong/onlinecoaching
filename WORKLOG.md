@@ -1,5 +1,13 @@
 # 작업 기록
 
+## 2026-06-15 (1단계 기반 완료)
+- Phase 1(Foundation) 7개 Task 전부 완료·푸시. 서브에이전트 구동 + 2단계 검토(스펙·품질) + 자동 보안 리뷰 2회 반영.
+- 결과물: Next.js 16+TS+Tailwind+Vitest, Supabase 로컬 스택, DB 스키마 9테이블+RLS(보안 강화), 분류 시드(축4·태그19), Supabase SSR 클라이언트, 역할 판정, 카카오 로그인/콜백/역할별 대시보드.
+- 보안: RLS 자가권한상승 차단·테넌트 격리·최소권한 grant, 콜백 role 최초1회 설정+재로그인 보존+확인된 이메일만 코치, APP_URL 기준 리다이렉트. 라이브 검증 스크립트로 실증.
+- 검증: npm test 9/9, tsc 클린, npm run build 성공, 통합 검토 READY.
+- 환경 셋업: Docker Desktop 설치(brew)·실행, supabase CLI(devDep), 로컬 스택 기동.
+- **남은 일(사용자 액션)**: 카카오 개발자 키 발급 + Supabase Auth 카카오 활성화 → 실제 OAuth 로그인 라이브 검증. 이후 2단계(회원 신청+영상 업로드)로 진행.
+
 ## 2026-06-15 (Task 7)
 - 카카오 로그인 UI, OAuth 콜백, 프로필 보장, 역할별 대시보드 구현
 - src/app/login/page.tsx: 카카오 OAuth 시작 버튼 (클라이언트 컴포넌트)
