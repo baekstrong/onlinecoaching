@@ -1,5 +1,16 @@
 # 작업 기록
 
+## 2026-06-15 (Phase 3b Task 6 - 요청 상세 피드백 에디터)
+- src/app/coach/requests/[id]/page.tsx 교체: getFeedbackForRequest+listFeedbackAssets+listTemplates 병렬 로드, FeedbackEditor에 templates/initialText/publishedAt/initialAssets 전달
+- src/app/coach/requests/[id]/feedback-editor.tsx 생성: 클라이언트 컴포넌트 — 템플릿 불러오기(select), 텍스트 에디터(textarea), 이미지 첨부(file input → presigned PUT → attachFeedbackImage), 이미지 제거(detachFeedbackImage), 임시 저장(saveFeedback), 발행(saveFeedback+publishFeedbackAction), 발행 상태 표시(발행됨/작성중), error/notice 상태 메시지
+- 기존 video + 회원 메모 + ClassificationEditor 유지 확인
+- npx tsc --noEmit: 에러 없음
+- npm run build: 성공 — /coach/requests/[id](Dynamic ƒ) 라우트 테이블 포함 확인
+- npm test: 13 files, 35 tests 전체 통과
+- 변경된 파일: src/app/coach/requests/[id]/page.tsx, src/app/coach/requests/[id]/feedback-editor.tsx
+- 커밋: 5baa2f9 (NOT pushed)
+- 다음 작업: Phase 3b 완료 / 사용자 검토
+
 ## 2026-06-15 (Phase 3b Task 5 - 코치 템플릿 관리 페이지 + 대시보드 링크)
 - src/app/coach/actions.ts: 템플릿 import 추가 + 3개 Server Action 추가 (createTemplateAction, updateTemplateAction, deleteTemplateAction) — 모두 assertCoach() 통과
 - src/app/coach/templates/page.tsx 생성: 서버 컴포넌트 — requireCoachPage() 후 listTemplates() 로드, TemplateManager에 전달
