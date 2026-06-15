@@ -45,3 +45,10 @@ export async function createPresignedDownloadUrl(
   })
   return getSignedUrl(r2Client(), command, { expiresIn })
 }
+
+/** 피드백 첨부 이미지용 R2 object key. 예: feedback/<requestId>/<uuid>.png */
+export function buildFeedbackImageKey(requestId: string, filename: string): string {
+  const match = filename.match(/\.([a-zA-Z0-9]+)$/)
+  const ext = match ? match[1].toLowerCase() : 'png'
+  return `feedback/${requestId}/${randomUUID()}.${ext}`
+}

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { buildVideoObjectKey, createPresignedUploadUrl, createPresignedDownloadUrl } from './r2'
+import { buildVideoObjectKey, createPresignedUploadUrl, createPresignedDownloadUrl, buildFeedbackImageKey } from './r2'
 
 describe('buildVideoObjectKey', () => {
   it('회원 prefix 아래 확장자를 보존한 고유 키를 만든다', () => {
@@ -36,5 +36,16 @@ describe('createPresignedDownloadUrl', () => {
     expect(url).toContain('coaching-videos')
     expect(url).toContain('requests/u1/abc.mp4')
     expect(url).toContain('X-Amz-Signature')
+  })
+})
+
+describe('buildFeedbackImageKey', () => {
+  it('feedback prefix 아래 요청별 확장자 보존 고유 키를 만든다', () => {
+    const key = buildFeedbackImageKey('req-1', 'diagram.PNG')
+    expect(key.startsWith('feedback/req-1/')).toBe(true)
+    expect(key.endsWith('.png')).toBe(true)
+  })
+  it('호출마다 다른 키', () => {
+    expect(buildFeedbackImageKey('r', 'a.png')).not.toBe(buildFeedbackImageKey('r', 'a.png'))
   })
 })
