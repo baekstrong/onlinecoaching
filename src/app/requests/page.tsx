@@ -31,11 +31,13 @@ export default async function RequestsPage() {
         <ul className="flex flex-col gap-2">
           {requests.map((r) => (
             <li key={r.id} className="rounded-md border p-3">
-              <p className="text-sm text-gray-500">
-                {new Date(r.created_at).toLocaleDateString('ko-KR')}
-              </p>
-              <p className="font-medium">{STATUS_LABEL[r.status] ?? r.status}</p>
-              {r.member_note && <p className="mt-1 text-sm">{r.member_note}</p>}
+              <Link href={`/requests/${r.id}`} className="block">
+                <p className="text-sm text-gray-500">
+                  {new Date(r.created_at).toLocaleDateString('ko-KR')}
+                </p>
+                <p className="font-medium">{STATUS_LABEL[r.status] ?? r.status}</p>
+                {r.member_note && <p className="mt-1 text-sm">{r.member_note}</p>}
+              </Link>
             </li>
           ))}
         </ul>
