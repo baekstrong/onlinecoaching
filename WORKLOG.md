@@ -1,5 +1,16 @@
 # 작업 기록
 
+## 2026-06-15 (Phase 3b Task 2 - 피드백 템플릿 CRUD 도메인 로직(코치))
+- TDD: 테스트 먼저 작성(모듈 없음 → FAIL), 구현 후 PASS 2/2 확인
+- src/lib/templates.test.ts: 2개 테스트 (코치 템플릿 생성/수정/삭제/목록 조회 / 회원 RLS 차단)
+- src/lib/templates.ts: FeedbackTemplate 타입, listTemplates, createTemplate, updateTemplate, deleteTemplate 구현 — body_rich jsonb({ text }) 매핑, RLS가 코치 본인 것만 노출/수정 보장
+- RLS 차단 검증: 회원 createTemplate 시 Supabase 에러 → throw 확인 (is_coach() WITH CHECK 정상 작동)
+- npm test -- templates: 2/2 통과 / npm test: 12 files, 33 tests 전체 통과
+- npx tsc --noEmit: 에러 없음
+- 변경된 파일: src/lib/templates.ts, src/lib/templates.test.ts
+- 커밋: d155fb3 (NOT pushed)
+- 다음 작업: Phase 3b Task 3 - 피드백 draft·발행·자산 도메인 로직
+
 ## 2026-06-15 (Phase 3b Task 1 - 피드백 유일성·자산 object_key 마이그레이션 + 이미지 키 빌더)
 - TDD: 테스트 먼저 추가(buildFeedbackImageKey not exported → 2 FAIL), 구현 후 7/7 PASS 확인
 - supabase/migrations/0004_feedback.sql: feedbacks_request_unique 유일 제약(요청당 피드백 1개 upsert 대상), feedback_assets.image_url → object_key 컬럼 rename
