@@ -1,5 +1,12 @@
 # 작업 기록
 
+## 2026-06-15 (3a단계 코치 요청 큐+분류 태깅 완료)
+- Phase 3a 7개 Task + 리뷰 반영 리팩터 완료·푸시. 서브에이전트 구동 + 2단계 검토.
+- 결과물: R2 GET URL, 코치 판정 헬퍼, 요청 목록(상태필터)/상세, 전체 축 조회+요청 분류 CRUD, 코치 Server Action, 요청 큐 페이지, 상세(영상 재생·메모)+분류 태깅 UI, 공용 코치 가드.
+- 보안: 코치 페이지 가드(requireCoachPage) + Server Action assertCoach + RLS(코치 전체조회·분류관리, 멤버 차단). 데이터계층 E2E 16검사 통과.
+- 검증: npm test 29/29, tsc 클린, build 성공, 통합 검토 READY.
+- 다음 작업: 3b단계(템플릿 라이브러리 + 리치 피드백 작성/발행)
+
 ## 2026-06-15 (Phase 3a 최종 통합 검토)
 - npm test: 11 files, 29 tests 전체 통과
 - npx tsc --noEmit: .next 삭제 후 재실행 — 에러 없음
