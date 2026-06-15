@@ -1,5 +1,17 @@
 # 작업 기록
 
+## 2026-06-15 (Task 7)
+- 카카오 로그인 UI, OAuth 콜백, 프로필 보장, 역할별 대시보드 구현
+- src/app/login/page.tsx: 카카오 OAuth 시작 버튼 (클라이언트 컴포넌트)
+- src/app/auth/callback/route.ts: 코드 교환 → 프로필 upsert(service_role) → /dashboard 리디렉트
+- middleware.ts (프로젝트 루트): updateSession 래핑, /dashboard 미인증 접근 차단
+- src/app/dashboard/page.tsx: 서버 컴포넌트, 미인증 시 /login 리디렉트, role별 타이틀 표시
+- src/app/page.tsx: 기본 랜딩 페이지 교체 (코칭 시작하기 → /login 링크)
+- 검증: npx tsc --noEmit 에러 없음 / npm test 4 files 9 tests 모두 통과 / npm run build 성공 (/, /login, /dashboard, /auth/callback 라우트 포함)
+- 스모크 테스트: GET /dashboard → 307 http://localhost:3000/login (미인증 차단 정상) / GET /login → 200
+- 변경된 파일: src/app/login/page.tsx, src/app/auth/callback/route.ts, middleware.ts, src/app/dashboard/page.tsx, src/app/page.tsx
+- 다음 작업: Kakao 개발자 키 설정 후 실제 OAuth 플로우 테스트
+
 ## 2026-06-15 (Task 4)
 - 분류 체계(축·값) 초기 시드 추가
 - supabase/seed.sql 작성: 4개 축(운동 종목/문제 유형/신체 부위/회원 수준), 19개 태그
