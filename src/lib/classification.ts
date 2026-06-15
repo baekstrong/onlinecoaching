@@ -27,3 +27,30 @@ export async function getMemberFacingAxisWithTags(
 
   return { axis, tags: tags ?? [] }
 }
+
+export type AxisWithTags = {
+  id: string
+  name: string
+  is_member_facing: boolean
+  allow_multiple: boolean
+  tags: ClassificationTag[]
+}
+
+/** 모든 분류 축과 태그를 sort_order 순서로 반환(코치 태깅 UI용). */
+export async function getAllAxesWithTags(supabase: SupabaseClient): Promise<AxisWithTags[]> {
+  const { data: axes } = await supabase
+    .from('classification_axes')
+    .select('id, name, is_member_facing, allow_multiple')
+    .order('sort_order')
+  if (!axes) return []
+
+  const { data: tags } = await supabase
+    .from('classification_tags')
+    .select('id, label, axis_id')
+    .order('sort_order')
+
+  return axes.map((a) => ({
+    ...a,
+    tags: (tags ?? []).filter((t) => t.axis_id === a.id).map((t) => ({ id: t.id, label: t.label })),
+  }))
+}
